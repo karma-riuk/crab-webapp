@@ -1,0 +1,14 @@
+body {
+    font-family: sans-serif;
+    max-width: 600px;
+    margin: 2em auto;
+}
+
+fieldset {
+    margin-bottom: 1.5em;
+    padding: 1em;
+}
+
+button {
+    padding: 0.5em 1em;
+}
