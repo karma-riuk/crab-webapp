@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dataset Downloader & Answer Uploader</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 600px;
+            margin: 2em auto;
+        }
+
+        fieldset {
+            margin-bottom: 1.5em;
+            padding: 1em;
+        }
+
+        button {
+            padding: 0.5em 1em;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Crab Webapp</h1>
+
+    <fieldset>
+        <legend><strong>Download a Dataset</strong></legend>
+        <label for="datasetSelect">Dataset:</label>
+        <select id="datasetSelect">
+            <option value="comment_generation">comment_generation</option>
+            <option value="code_refinement">code_refinement</option>
+        </select>
+        <label>
+            <input type="checkbox" id="withContext">
+            Include context
+        </label>
+        <br /><br />
+        <button id="downloadBtn">Download</button>
+    </fieldset>
+
+    <fieldset>
+        <legend><strong>Upload Your Answers</strong></legend>
+        <label for="answerType">Type:</label>
+        <select id="answerType">
+            <option value="comments">Comments</option>
+            <option value="refinement">Refinement</option>
+        </select>
+        <br /><br />
+        <input type="file" id="fileInput" accept="application/json" />
+        <br /><br />
+        <button id="uploadBtn">Upload JSON</button>
+    </fieldset>
+
+    <div id="status" style="color: green;"></div>
+
+    <script src="js/index.js"></script>
+</body>
+
+</html>

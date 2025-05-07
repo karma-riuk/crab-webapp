@@ -13,6 +13,7 @@ app.use(cors());
 app.use(json());
 
 // Use routes
+app.use(express.static("public"));
 app.use('/', routes);
 
 // Start server
