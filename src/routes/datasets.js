@@ -5,9 +5,7 @@ import { getProjectPath } from "../utils/paths.js";
 const router = Router();
 
 // Environment variables for paths (all relative to project root)
-const DATA_DIR = process.env.DATA_DIR
-    ? getProjectPath(process.env.DATA_DIR)
-    : getProjectPath("data");
+const DATA_DIR = getProjectPath("data");
 
 const DATASETS = ["comment_generation", "code_refinement"];
 
