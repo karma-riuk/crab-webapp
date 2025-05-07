@@ -2,6 +2,11 @@
 
 ## [ ] As a user I want to be able to download the dataset for EITHER comment generation OR code refinment
 
+- When asking for the dataset, there is a parameter to say whether you want to download the context or
+  not (the state of the repo before the PR).
+
+- TODO: actually build the datasets
+
 ## [ ] As a user I want to be able to submit my predictions for the given downloaded dataset
 
 ## [ ] As a user I want to be able to see the performance of my predictions against the benchmark (comment generation: bleu score, code refinement: # tests passed)
