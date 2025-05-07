@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import datasetRoutes from './datasets.js';
+import answerRoutes from './answers.js';
 
 const router = Router();
 
@@ -15,5 +16,8 @@ router.get('/api/hello', (_req, res) => {
 
 // Dataset routes
 router.use('/datasets', datasetRoutes);
+
+// Answer submission routes
+router.use('/answers', answerRoutes);
 
 export default router; 
