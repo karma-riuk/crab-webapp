@@ -42,3 +42,50 @@ h1 {
     width: 100%;
 }
 
+#results-container {
+    display: none;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+table th {
+    background-color: #f4f4f4;
+    padding: 8px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+}
+
+table td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* style id column values */
+table td:nth-child(1) {
+
+  font-family: monospace;   /* fixed-width font */
+  width: 8ch;               /* exactly 8 “0” widths */
+  white-space: normal;      /* allow wrapping */
+  word-break: break-all;   
+}
+
+/* style score header */
+table th:nth-child(3) {
+    white-space: nowrap;
+}
+
+/* style score column values */
+table td:nth-child(3) {
+    text-align: right;
+}
+

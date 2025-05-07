@@ -4,7 +4,7 @@ import { bleu } from "bleu-score";
 
 const DATASET_PATH = getProjectPath("data/dataset.json");
 
-export const evaluate_comments = async (answers, percent_cb) => {
+export const evaluate_comments = async (answers, percent_cb, finished_cb) => {
     console.log(`Reading dataset...`);
     const raw = fs.readFileSync(DATASET_PATH);
     const dataset = JSON.parse(raw);
@@ -19,6 +19,7 @@ export const evaluate_comments = async (answers, percent_cb) => {
 
     const total = Object.keys(answers).length;
     let i = 0;
+    const results = {};
     for (const [id, generated_comment] of Object.entries(answers)) {
         console.log(`Processing ${id}...`);
         if (!(id in referenceMap)) {
@@ -34,15 +35,20 @@ export const evaluate_comments = async (answers, percent_cb) => {
             maxScore = Math.max(score, maxScore);
             console.log(`bleu score: ${score}`);
         }
+        results[id] = {
+            "proposed comment": generated_comment,
+            "max bleu score": maxScore,
+        };
         console.log(`Max bleu score: ${maxScore}`);
 
         console.log(`Done with ${id}`);
         percent_cb(Math.floor((++i / total) * 100));
     }
     console.log("Done processing comments!");
+    finished_cb(results);
 };
 
-export const evaluate_refinement = async (answers, percent_cb) => {
+export const evaluate_refinement = async (answers, percent_cb, finished_cb) => {
     const total = Object.keys(answers).length;
     let i = 0;
     for (const [key, value] of Object.entries(answers)) {
