@@ -29,3 +29,16 @@ h1 {
 #progress-container {
     display: none;
 }
+
+#progress-container div {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: .5em;
+}
+
+#progress-bar {
+    flex-grow: 1;
+    width: 100%;
+}
+
