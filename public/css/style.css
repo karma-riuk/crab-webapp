@@ -25,3 +25,7 @@ h1 {
     /* adjust size as you like */
     height: auto;
 }
+
+#progress-container {
+    display: none;
+}

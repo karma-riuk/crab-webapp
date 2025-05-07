@@ -7,6 +7,8 @@
     <link rel="icon" type="image/x-icon" href="/img/crab.png">
     <title>Dataset Downloader & Answer Uploader</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script defer src="js/socket.js"></script>
     <script defer src="js/index.js"></script>
 </head>
 
@@ -42,9 +44,14 @@
         <input type="file" id="fileInput" accept="application/json" />
         <br /><br />
         <button id="uploadBtn">Upload JSON</button>
+        <span id="status" style="color: green;"> </span>
     </fieldset>
 
-    <div id="status" style="color: green;"></div>
+
+    <div id="progress-container">
+        <progress id="progress-bar" value="0" max="100"></progress>
+        <span id="progress-text">0%</span>
+    </div>
 
 </body>
 
