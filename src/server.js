@@ -1,7 +1,8 @@
-import express, { json } from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import routes from './routes/index.js';
+import express, { json } from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import routes from "./routes/index.js";
+import createSocketServer from "./socket.js";
 
 dotenv.config();
 
@@ -14,9 +15,11 @@ app.use(json());
 
 // Use routes
 app.use(express.static("public"));
-app.use('/', routes);
+app.use("/", routes);
+
+const server = createSocketServer(app);
 
 // Start server
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
-}); 
+});

@@ -1,6 +1,6 @@
-import { Router } from 'express';
-import multer from 'multer';
-import { InvalidJsonFormatError } from '../utils/errors.js';
+import { Router } from "express";
+import multer from "multer";
+import { InvalidJsonFormatError } from "../utils/errors.js";
 
 const router = Router();
 
@@ -12,12 +12,12 @@ const upload = multer({
     },
     fileFilter: (_req, file, cb) => {
         // Accept only JSON files
-        if (file.mimetype === 'application/json') {
+        if (file.mimetype === "application/json") {
             cb(null, true);
         } else {
-            cb(new Error('Only JSON files are allowed'));
+            cb(new Error("Only JSON files are allowed"));
         }
-    }
+    },
 });
 
 // Helper function to validate JSON format
@@ -25,26 +25,36 @@ const validateJsonFormat = (data) => {
     try {
         const parsed = JSON.parse(data);
         // Check if it's an object
-        if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
-            throw new InvalidJsonFormatError("Submitted json doesn't contain an object");
+        if (
+            typeof parsed !== "object" ||
+            parsed === null ||
+            Array.isArray(parsed)
+        ) {
+            throw new InvalidJsonFormatError(
+                "Submitted json doesn't contain an object",
+            );
         }
         // Check if all values are strings
-        if (!Object.values(parsed).every(value => typeof value === 'string')) {
-            throw new InvalidJsonFormatError("Submitted json object must only be str -> str. Namely id -> comment");
+        if (
+            !Object.values(parsed).every((value) => typeof value === "string")
+        ) {
+            throw new InvalidJsonFormatError(
+                "Submitted json object must only be str -> str. Namely id -> comment",
+            );
         }
         return parsed;
     } catch (error) {
         if (error instanceof InvalidJsonFormatError) {
             throw error;
         }
-        throw new InvalidJsonFormatError('Invalid JSON format');
+        throw new InvalidJsonFormatError("Invalid JSON format");
     }
 };
 
-router.post('/submit/comments', upload.single('file'), async (req, res) => {
+router.post("/submit/comments", upload.single("file"), async (req, res) => {
     try {
         if (!req.file) {
-            return res.status(400).json({ error: 'No file uploaded' });
+            return res.status(400).json({ error: "No file uploaded" });
         }
 
         const fileContent = req.file.buffer.toString();
@@ -55,8 +65,8 @@ router.post('/submit/comments', upload.single('file'), async (req, res) => {
         } catch (error) {
             if (error instanceof InvalidJsonFormatError) {
                 return res.status(400).json({
-                    error: 'Invalid JSON format',
-                    message: error.message
+                    error: "Invalid JSON format",
+                    message: error.message,
                 });
             }
             throw error;
@@ -65,20 +75,19 @@ router.post('/submit/comments', upload.single('file'), async (req, res) => {
         // TODO: Save the file or process it further
         // For now, just return success
         res.status(200).json({
-            message: 'Answer submitted successfully',
-            data: validatedData
+            message: "Answer submitted successfully",
+            data: validatedData,
         });
-
     } catch (error) {
-        console.error('Error processing submission:', error);
-        res.status(500).json({ error: 'Error processing submission' });
+        console.error("Error processing submission:", error);
+        res.status(500).json({ error: "Error processing submission" });
     }
 });
 
-router.post('/submit/refinement', upload.single('file'), async (req, res) => {
+router.post("/submit/refinement", upload.single("file"), async (req, res) => {
     try {
         if (!req.file) {
-            return res.status(400).json({ error: 'No file uploaded' });
+            return res.status(400).json({ error: "No file uploaded" });
         }
 
         const fileContent = req.file.buffer.toString();
@@ -89,8 +98,8 @@ router.post('/submit/refinement', upload.single('file'), async (req, res) => {
         } catch (error) {
             if (error instanceof InvalidJsonFormatError) {
                 return res.status(400).json({
-                    error: 'Invalid JSON format',
-                    message: error.message
+                    error: "Invalid JSON format",
+                    message: error.message,
                 });
             }
             throw error;
@@ -99,14 +108,13 @@ router.post('/submit/refinement', upload.single('file'), async (req, res) => {
         // TODO: Save the file or process it further
         // For now, just return success
         res.status(200).json({
-            message: 'Answer submitted successfully',
-            data: validatedData
+            message: "Answer submitted successfully",
+            data: validatedData,
         });
-
     } catch (error) {
-        console.error('Error processing submission:', error);
-        res.status(500).json({ error: 'Error processing submission' });
+        console.error("Error processing submission:", error);
+        res.status(500).json({ error: "Error processing submission" });
     }
 });
 
-export default router; 
+export default router;
