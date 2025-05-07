@@ -50,11 +50,20 @@ table {
     width: 100%;
     border-collapse: collapse;
 }
-table th {
+
+table thead {
     background-color: #f4f4f4;
-    padding: 8px;
-    text-align: left;
     border-bottom: 2px solid #ddd;
+    cursor: default;
+}
+
+table thead th {
+    padding: 8px;
+}
+
+table thead th:hover {
+    cursor: pointer;
+    background-color: #eee;
 }
 
 table td {
@@ -62,20 +71,19 @@ table td {
     border-bottom: 1px solid #eee;
 }
 
-table tr:nth-child(even) {
+table tbody tr:nth-child(even) {
     background-color: #fafafa;
 }
 
-table tr:hover {
+table tbody tr:hover {
     background-color: #f1f1f1;
 }
 
 /* style id column values */
-table td:nth-child(1) {
-
-  font-family: monospace;   /* fixed-width font */
-  width: 8ch;               /* exactly 8 “0” widths */
-  white-space: normal;      /* allow wrapping */
+table tbody td:nth-child(1) {
+  font-family: monospace;
+  width: 8ch;
+  white-space: normal;
   word-break: break-all;   
 }
 
@@ -85,7 +93,7 @@ table th:nth-child(3) {
 }
 
 /* style score column values */
-table td:nth-child(3) {
+table tbody td:nth-child(3) {
     text-align: right;
 }
 
