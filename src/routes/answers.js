@@ -1,7 +1,6 @@
 import { Router } from "express";
 import multer from "multer";
 import { InvalidJsonFormatError } from "../utils/errors.js";
-import { io as socket } from "../socket.js";
 import { evaluate_comments } from "../utils/process_data.js";
 
 const router = Router();
@@ -74,8 +73,18 @@ router.post("/submit/comments", upload.single("file"), async (req, res) => {
             throw error;
         }
 
-        socket.emit("started-processing");
-        evaluate_comments(validatedData);
+        const io = req.app.get("io");
+        const header = req.get("X-Socket-Id");
+        const socketId = header && header.trim();
+        if (socketId && io.sockets.sockets.has(socketId)) {
+            io.to(socketId).emit("started-processing");
+        }
+
+        evaluate_comments(validatedData, (percent) => {
+            if (!(socketId && io.sockets.sockets.has(socketId))) return;
+
+            io.to(socketId).emit("progress", { percent });
+        });
 
         res.status(200).json({
             message: "Answer submitted successfully",

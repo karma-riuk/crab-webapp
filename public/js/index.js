@@ -19,12 +19,14 @@ document.getElementById("uploadBtn").onclick = async () => {
     form.append("file", file);
 
     const res = await fetch(`/answers/submit/${type}`, {
+        headers: {
+            "X-Socket-Id": socket.id,
+        },
         method: "POST",
         body: form,
     });
 
     const json = await res.json();
-    console.log(json);
     const statusEl = document.getElementById("status");
     if (res.ok) {
         statusEl.style.color = "green";

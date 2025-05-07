@@ -5,13 +5,10 @@ function onConnect(socket) {
     console.log("Websocket client connected:", socket.id);
 }
 
-let io;
-
-function createSocketServer(app) {
+export function createSocketServer(app) {
     const httpServer = http.createServer(app);
-    io = new Server(httpServer);
+    const io = new Server(httpServer);
     io.on("connection", onConnect);
+    app.set("io", io);
     return httpServer;
 }
-
-export { createSocketServer, io };
