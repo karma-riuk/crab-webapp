@@ -27,17 +27,20 @@ export const evaluate_comments = async (answers, percent_cb, finished_cb) => {
             console.error(`id: "${id}" is not present in the dataset`);
             continue;
         }
-        const references = referenceMap[id];
+        const paraphrases = referenceMap[id];
 
         let maxScore = 0;
-        for (let reference of references) {
-            const score = bleu(reference, generated_comment, 4); // TODO: ask prof what number show be here
+        const scores = []
+        for (const paraphrase of paraphrases) {
+            const score = bleu(paraphrase, generated_comment, 4); // TODO: ask prof what number show be here
+            scores.push(score);
             maxScore = Math.max(score, maxScore);
             console.log(`bleu score: ${score}`);
         }
         results[id] = {
-            "proposed comment": generated_comment,
             "max bleu score": maxScore,
+            "bleu scores": scores,
+            "proposed comment": generated_comment,
         };
         console.log(`Max bleu score: ${maxScore}`);
 
