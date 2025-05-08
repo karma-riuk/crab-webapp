@@ -9,6 +9,10 @@
 
 ## [x] As a user I want to be able to submit my predictions for the given downloaded dataset
 
+## [ ] As a user I want to be able to see the results of the code refinment, whether the compiled and tested successfully
+
+## [ ] Add a download button to the page that gives the user a slightly more detailed version of the result, showing the bleu score for each paraphrase and the number of tests passed for code refinement (?)
+
 ## [ ] As a user I want to be able to see the performance of my predictions against the benchmark (comment generation: bleu score, code refinement: # tests passed)
 
 # Work flow
