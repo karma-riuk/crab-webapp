@@ -2,32 +2,32 @@ import fs from "fs";
 import { getProjectPath } from "../utils/paths.js";
 import { bleu } from "bleu-score";
 
-const DATASET_PATH = getProjectPath("data/dataset.json");
 
-export const evaluate_comments = async (answers, percent_cb, finished_cb) => {
-    console.log(`Reading dataset...`);
-    const raw = fs.readFileSync(DATASET_PATH);
-    const dataset = JSON.parse(raw);
-
-    console.log(`Building reference map...`);
+function buildReferenceMap(dataset_path) {
     const referenceMap = {};
+    const dataset = JSON.parse(fs.readFileSync(dataset_path));
     for (const entry of dataset.entries) {
         const id = entry.metadata.id;
         const comments = entry.comments;
         referenceMap[id] = comments.map((c) => c.body);
     }
+    return referenceMap;
+}
 
+const REFERENCE_MAP = buildReferenceMap(getProjectPath("data/dataset.json"));
+
+export const evaluate_comments = async (answers, percent_cb, finished_cb) => {
     const total = Object.keys(answers).length;
     let i = 0;
     const results = {};
     for (const [id, generated_comment] of Object.entries(answers)) {
         console.log(`Processing ${id}...`);
-        if (!(id in referenceMap)) {
+        if (!(id in REFERENCE_MAP)) {
             // throw new Error(`id: "${id}" is not present in the dataset`);
             console.error(`id: "${id}" is not present in the dataset`);
             continue;
         }
-        const paraphrases = referenceMap[id];
+        const paraphrases = REFERENCE_MAP[id];
 
         let maxScore = 0;
         const scores = []
