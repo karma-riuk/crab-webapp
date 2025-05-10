@@ -7,6 +7,8 @@ const statusEl = document.getElementById("status");
 
 const resultsContainer = document.getElementById("results-container");
 
+let results = {};
+
 // Download logic
 document.getElementById("download-dataset").onclick = () => {
     const ds = document.getElementById("dataset-select").value;
@@ -43,13 +45,14 @@ document.getElementById("upload-btn").onclick = async () => {
         return;
     }
 
+    results = json;
     progressContainer.style.display = "none";
     resultsContainer.style.display = "block";
 
     const tbody = resultsContainer.querySelector("table tbody");
     tbody.innerHTML = "";
 
-    Object.entries(json).forEach(([id, info]) => {
+    Object.entries(results).forEach(([id, info]) => {
         const row = tbody.insertRow(); // create a new row
         const idCell = row.insertCell(); // cell 1: id
         const commentCell = row.insertCell(); // cell 2: proposed comment
@@ -59,6 +62,18 @@ document.getElementById("upload-btn").onclick = async () => {
         commentCell.innerHTML = `<span class='comment-cell'>${info["proposed comment"]}</span>`;
         scoreCell.textContent = info["max bleu score"].toFixed(4);
     });
+};
+
+document.getElementById("download-results").onclick = () => {
+    const dataStr =
+        "data:text/json;charset=utf-8," +
+        encodeURIComponent(JSON.stringify(results));
+    const dlAnchorElem = document.createElement("a");
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", "results.json");
+    document.body.appendChild(dlAnchorElem);
+    dlAnchorElem.click();
+    document.body.removeChild(dlAnchorElem);
 };
 
 function setProgress(percent) {
