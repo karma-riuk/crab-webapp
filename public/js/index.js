@@ -45,8 +45,6 @@ document.getElementById("uploadBtn").onclick = async () => {
 
     progressContainer.style.display = "none";
     resultsContainer.style.display = "block";
-    // empty the table besides the header of the table and fill the table. the data is of form id:
-    // {"proposed comment": "bla bla bla", "bleu score": 0.2}
 
     const tbody = resultsContainer.querySelector("table tbody");
     tbody.innerHTML = "";
