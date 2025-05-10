@@ -29,7 +29,7 @@ export const evaluate_comments = async (answers, percent_cb, finished_cb) => {
         const paraphrases = REFERENCE_MAP[id];
 
         let maxScore = 0;
-        const scores = []
+        const scores = [];
         for (const paraphrase of paraphrases) {
             const score = bleu(paraphrase, generated_comment, 4); // TODO: ask prof what number show be here
             scores.push(score);
