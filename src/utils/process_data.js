@@ -20,7 +20,7 @@ export const evaluate_comments = async (answers, percent_cb, finished_cb) => {
     let i = 0;
     const results = {};
     for (const [id, generated_comment] of Object.entries(answers)) {
-        console.log(`Processing ${id}...`);
+        // console.log(`Processing ${i} ${id}...`);
         if (!(id in REFERENCE_MAP)) {
             // throw new Error(`id: "${id}" is not present in the dataset`);
             console.error(`id: "${id}" is not present in the dataset`);
@@ -34,19 +34,14 @@ export const evaluate_comments = async (answers, percent_cb, finished_cb) => {
             const score = bleu(paraphrase, generated_comment, 4); // TODO: ask prof what number show be here
             scores.push(score);
             maxScore = Math.max(score, maxScore);
-            console.log(`bleu score: ${score}`);
         }
         results[id] = {
             "max bleu score": maxScore,
             "bleu scores": scores,
             "proposed comment": generated_comment,
         };
-        console.log(`Max bleu score: ${maxScore}`);
-
-        console.log(`Done with ${id}`);
         percent_cb(Math.floor((++i / total) * 100));
     }
-    console.log("Done processing comments!");
     finished_cb(results);
 };
 
