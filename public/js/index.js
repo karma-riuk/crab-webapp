@@ -1,3 +1,12 @@
+const socket = io();
+
+const progressContainer = document.getElementById("progress-container");
+const progressBar = document.getElementById("progress-bar");
+const progressText = document.getElementById("progress-text");
+const statusEl = document.getElementById("status");
+
+const resultsContainer = document.getElementById("results-container");
+
 // Download logic
 document.getElementById("downloadBtn").onclick = () => {
     const ds = document.getElementById("datasetSelect").value;
@@ -27,13 +36,52 @@ document.getElementById("uploadBtn").onclick = async () => {
     });
 
     const json = await res.json();
-    const statusEl = document.getElementById("status");
-    if (res.ok) {
-        statusEl.style.color = "green";
-        statusEl.textContent = json.message || "Upload succeeded!";
-    } else {
+    if (!res.ok) {
         statusEl.style.color = "red";
         statusEl.textContent =
             json.error + (json.message ? ": " + json.message : "");
+        return;
     }
+
+    progressContainer.style.display = "none";
+    resultsContainer.style.display = "block";
+    // empty the table besides the header of the table and fill the table. the data is of form id:
+    // {"proposed comment": "bla bla bla", "bleu score": 0.2}
+
+    const tbody = resultsContainer.querySelector("table tbody");
+    tbody.innerHTML = "";
+
+    Object.entries(json).forEach(([id, info]) => {
+        const row = tbody.insertRow(); // create a new row
+        const idCell = row.insertCell(); // cell 1: id
+        const commentCell = row.insertCell(); // cell 2: proposed comment
+        const scoreCell = row.insertCell(); // cell 3: bleu score
+
+        idCell.textContent = id;
+        commentCell.innerHTML = `<span class='comment-cell'>${info["proposed comment"]}</span>`;
+        scoreCell.textContent = info["max bleu score"].toFixed(4);
+    });
 };
+
+function setProgress(percent) {
+    progressBar.value = percent;
+    progressText.textContent = `${percent}%`;
+}
+
+socket.on("progress", (data) => {
+    setProgress(data.percent);
+    if (data.percent == 100) {
+        statusEl.style.color = "green";
+        statusEl.textContent = "Processing complete!";
+    }
+});
+
+socket.on("started-processing", () => {
+    progressContainer.style.display = "block";
+    setProgress(0);
+});
+
+socket.on("successul-upload", () => {
+    statusEl.style.color = "green";
+    statusEl.textContent = "Upload succeeded!";
+});

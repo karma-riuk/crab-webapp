@@ -77,6 +77,7 @@ router.post("/submit/comments", upload.single("file"), async (req, res) => {
         const header = req.get("X-Socket-Id");
         const socketId = header && header.trim();
         if (socketId && io.sockets.sockets.has(socketId)) {
+            io.to(socketId).emit("successul-upload");
             io.to(socketId).emit("started-processing");
         }
 

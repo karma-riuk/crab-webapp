@@ -87,6 +87,11 @@ table tbody td:nth-child(1) {
     word-break: break-all;
 }
 
+.comment-cell {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
 /* style score header */
 table th:nth-child(3) {
     white-space: nowrap;
@@ -96,4 +101,3 @@ table th:nth-child(3) {
 table tbody td:nth-child(3) {
     text-align: right;
 }
-
