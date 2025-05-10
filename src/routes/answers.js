@@ -80,23 +80,12 @@ router.post("/submit/comments", upload.single("file"), async (req, res) => {
             io.to(socketId).emit("started-processing");
         }
 
-        evaluate_comments(
-            validatedData,
-            (percent) => {
-                if (!(socketId && io.sockets.sockets.has(socketId))) return;
+        const results = evaluate_comments(validatedData, (percent) => {
+            if (!(socketId && io.sockets.sockets.has(socketId))) return;
 
-                io.to(socketId).emit("progress", { percent });
-            },
-            (results) => {
-                if (!(socketId && io.sockets.sockets.has(socketId))) return;
-                io.to(socketId).emit("ended-processing", results);
-            },
-        );
-
-        res.status(200).json({
-            message: "Answer submitted successfully",
-            data: validatedData,
+            io.to(socketId).emit("progress", { percent });
         });
+        res.status(200).json(results);
     } catch (error) {
         console.error("Error processing submission:", error);
         res.status(500).json({ error: "Error processing submission" });

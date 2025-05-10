@@ -81,10 +81,10 @@ table tbody tr:hover {
 
 /* style id column values */
 table tbody td:nth-child(1) {
-  font-family: monospace;
-  width: 8ch;
-  white-space: normal;
-  word-break: break-all;   
+    font-family: monospace;
+    width: 8ch;
+    white-space: normal;
+    word-break: break-all;
 }
 
 /* style score header */

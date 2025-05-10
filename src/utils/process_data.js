@@ -15,7 +15,7 @@ function buildReferenceMap(dataset_path) {
 
 const REFERENCE_MAP = buildReferenceMap(getProjectPath("data/dataset.json"));
 
-export const evaluate_comments = async (answers, percent_cb, finished_cb) => {
+export const evaluate_comments = (answers, percent_cb) => {
     const total = Object.keys(answers).length;
     let i = 0;
     const results = {};
@@ -42,7 +42,7 @@ export const evaluate_comments = async (answers, percent_cb, finished_cb) => {
         };
         percent_cb(Math.floor((++i / total) * 100));
     }
-    finished_cb(results);
+    return results;
 };
 
 export const evaluate_refinement = async (answers, percent_cb, finished_cb) => {
