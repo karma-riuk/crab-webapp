@@ -8,18 +8,18 @@ const statusEl = document.getElementById("status");
 const resultsContainer = document.getElementById("results-container");
 
 // Download logic
-document.getElementById("downloadBtn").onclick = () => {
-    const ds = document.getElementById("datasetSelect").value;
-    const withCtx = document.getElementById("withContext").checked;
+document.getElementById("download-dataset").onclick = () => {
+    const ds = document.getElementById("dataset-select").value;
+    const withCtx = document.getElementById("with-context").checked;
     const url =
         `/datasets/download/${ds}` + (withCtx ? "?withContext=true" : "");
     window.location = url;
 };
 
 // Upload logic
-document.getElementById("uploadBtn").onclick = async () => {
-    const type = document.getElementById("answerType").value;
-    const fileInput = document.getElementById("fileInput");
+document.getElementById("upload-btn").onclick = async () => {
+    const type = document.getElementById("answer-cype").value;
+    const fileInput = document.getElementById("file-cnput");
     if (!fileInput.files.length) {
         return alert("Please choose a JSON file first.");
     }
