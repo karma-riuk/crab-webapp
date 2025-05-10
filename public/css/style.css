@@ -5,6 +5,8 @@ body {
 }
 
 fieldset {
+    margin-left: 0;
+    margin-right: -1px;
     margin-bottom: 1.5em;
     padding: 1em;
 }
@@ -44,6 +46,13 @@ h1 {
 
 #results-container {
     display: none;
+}
+
+#results-container h3 {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 table {
