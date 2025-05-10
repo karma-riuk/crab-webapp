@@ -1,7 +1,6 @@
 import fs from "fs";
 import { getProjectPath } from "../utils/paths.js";
-import { bleu } from "bleu-score";
-
+import { bleu } from "../utils/bleu.js";
 
 function buildReferenceMap(dataset_path) {
     const referenceMap = {};
