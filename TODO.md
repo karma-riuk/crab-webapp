@@ -15,6 +15,7 @@
 
 ## [ ] As a user I want to be able to see the performance of my predictions against the benchmark (comment generation: bleu score, code refinement: # tests passed)
 
+## [ ] As a user I want to see what the webpage is used for (inspired from https://seart-ghs.si.usi.ch)
 # Work flow
 
 First I'll do a basic express server to serve the datasets. No login no frontend. I'll implement
