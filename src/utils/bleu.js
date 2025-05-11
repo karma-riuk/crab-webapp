@@ -98,19 +98,18 @@ export function bleu(refSentence, candSentence, maxN = 4, smooth = false) {
     return bp * geoMean;
 }
 
-// Example usage:
-
+// if __name__ == "__main__"
 if (process.argv[1] === import.meta.filename) {
     const test_pairs = [
-        // ["the cat is on the mat", "the cat is on the mat"],
-        // ["the cat is on the mat", "the the the the the the the"],
-        // ["the cat is on the mat", "the cat on the mat"],
-        // ["the cat is on the mat", "the cat is on the"],
-        // ["the cat is on the mat", "foo bar baz qux"],
-        // [
-        //     "The quick brown fox jumps over the lazy dog",
-        //     "The quick brown dog jumps over the lazy fox",
-        // ],
+        ["the cat is on the mat", "the cat is on the mat"],
+        ["the cat is on the mat", "the the the the the the the"],
+        ["the cat is on the mat", "the cat on the mat"],
+        ["the cat is on the mat", "the cat is on the"],
+        ["the cat is on the mat", "foo bar baz qux"],
+        [
+            "The quick brown fox jumps over the lazy dog",
+            "The quick brown dog jumps over the lazy fox",
+        ],
         [
             "This could be `static` to prevent any funkiness, i.e. attempting to use class state during the constructor or similar.",
             "This could be `static` to prevent any funkiness, i.e. attempting to use class state during the constructor or similar.",
