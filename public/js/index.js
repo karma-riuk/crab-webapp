@@ -59,8 +59,8 @@ document.getElementById("upload-btn").onclick = async () => {
         const scoreCell = row.insertCell(); // cell 3: bleu score
 
         idCell.textContent = id;
-        commentCell.innerHTML = `<span class='comment-cell'>${info["proposed comment"]}</span>`;
-        scoreCell.textContent = info["max bleu score"].toFixed(4);
+        commentCell.innerHTML = `<span class='comment-cell'>${info["proposed_comment"]}</span>`;
+        scoreCell.textContent = info["max_bleu_score"].toFixed(4);
     });
 };
 

@@ -36,9 +36,9 @@ export const evaluate_comments = (answers, percent_cb) => {
             maxScore = Math.max(score, maxScore);
         }
         results[id] = {
-            "max bleu score": maxScore,
-            "bleu scores": scores,
-            "proposed comment": generated_comment,
+            max_bleu_score: maxScore,
+            bleu_scores: scores,
+            proposed_comment: generated_comment,
         };
         percent_cb(Math.floor((++i / total) * 100));
     }
