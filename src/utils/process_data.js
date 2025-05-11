@@ -20,6 +20,7 @@ export const evaluate_comments = (answers, percent_cb) => {
     let i = 0;
     const results = {};
     for (const [id, generated_comment] of Object.entries(answers)) {
+        const n_tokens_generated = generated_comment.trim().split(/\s+/).length;
         // console.log(`Processing ${i} ${id}...`);
         if (!(id in REFERENCE_MAP)) {
             // throw new Error(`id: "${id}" is not present in the dataset`);
@@ -31,7 +32,9 @@ export const evaluate_comments = (answers, percent_cb) => {
         let maxScore = 0;
         const scores = [];
         for (const paraphrase of paraphrases) {
-            const score = bleu(paraphrase, generated_comment, 4); // TODO: ask prof what number show be here
+            const n_tokens_paraphrase = paraphrase.trim().split(/\s+/).length;
+            const max_n = Math.min(n_tokens_generated, n_tokens_paraphrase, 4);
+            const score = bleu(paraphrase, generated_comment, max_n);
             scores.push(score);
             maxScore = Math.max(score, maxScore);
         }
