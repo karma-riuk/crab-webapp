@@ -21,9 +21,7 @@ export const evaluate_comments = (answers, percent_cb) => {
     const results = {};
     for (const [id, generated_comment] of Object.entries(answers)) {
         const n_tokens_generated = generated_comment.trim().split(/\s+/).length;
-        // console.log(`Processing ${i} ${id}...`);
         if (!(id in REFERENCE_MAP)) {
-            // throw new Error(`id: "${id}" is not present in the dataset`);
             console.error(`id: "${id}" is not present in the dataset`);
             continue;
         }
