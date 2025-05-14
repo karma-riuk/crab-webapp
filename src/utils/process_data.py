@@ -1,3 +1,4 @@
+import os
 import sys, docker
 from utils.handlers import get_build_handler
 from .paths import get_project_path
@@ -58,6 +59,16 @@ def evaluate_refinement(answers: dict[str, dict[str, str]], percent_cb):
                 file=sys.stderr,
             )
             continue
+
+        for file_path, change in changes.items():
+            full_path = os.path.join(build_handler.path, file_path)
+            print("[INFO] Writing change to file:", full_path)
+            dirname = os.path.dirname(full_path)
+            if not os.path.exists(dirname):
+                print("[INFO] Creating directory:", dirname)
+                os.makedirs(dirname)
+            with open(full_path, "w") as f:
+                f.write(change)
 
         results[id] = {}
         with build_handler:
