@@ -60,7 +60,7 @@ document.getElementById("upload-btn").onclick = async () => {
 
         idCell.textContent = id;
         commentCell.innerHTML = `<span class='comment-cell'>${info["proposed_comment"]}</span>`;
-        scoreCell.textContent = info["max_bleu_score"];
+        scoreCell.textContent = info["max_bleu_score"].toFixed(2);
     });
 };
 
