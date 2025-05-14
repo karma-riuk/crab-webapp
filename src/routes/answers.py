@@ -1,7 +1,7 @@
 # routes/answers.py
 from flask import Blueprint, request, jsonify, current_app
 from utils.errors import InvalidJsonFormatError
-from utils.process_data import evaluate_comments
+from utils.process_data import evaluate_comments, evaluate_refinement
 import json
 
 router = Blueprint('answers', __name__, url_prefix='/answers')
@@ -84,4 +84,8 @@ def submit_refinement():
         socketio.emit('successful-upload', room=sid)
         socketio.emit('started-processing', room=sid)
 
-    return jsonify({'message': 'Answer submitted successfully'})
+    results = evaluate_refinement(
+        validated, lambda p: socketio.emit('progress', {'percent': p}, room=sid)
+    )
+
+    return jsonify(results)

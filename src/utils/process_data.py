@@ -1,5 +1,4 @@
-import sys
-
+import sys, docker
 from utils.handlers import get_build_handler
 from .paths import get_project_path
 from sacrebleu import sentence_bleu as bleu
@@ -10,6 +9,8 @@ REFERENCE_MAP = Dataset.from_json(
 ).build_reference_map()
 
 ARCHIVES_ROOT = str(get_project_path('../data/archives'))
+
+DOCKER_CLIENT = docker.from_env()
 
 
 def evaluate_comments(answers: dict[str, str], percent_cb):
@@ -37,10 +38,51 @@ def evaluate_comments(answers: dict[str, str], percent_cb):
     return results
 
 
-def evaluate_refinement(answers: dict[str, str], percent_cb):
+def evaluate_refinement(answers: dict[str, dict[str, str]], percent_cb):
+    print("Processing refinement...")
     total = len(answers)
-    for i, (key, value) in enumerate(answers.items(), 1):
-        print(f"Processing {key}: {value}...")
-        # time.sleep(1)
+    results = {}
+    for i, (id, value) in enumerate(answers.items(), 1):
+        print(f"Processing {id}...")
+        if id not in REFERENCE_MAP:
+            print(f"[WARNING] skipping {id} since it is not present in dataset", file=sys.stderr)
+            continue
+        entry = REFERENCE_MAP[id]
+        try:
+            build_handler = get_build_handler(
+                ARCHIVES_ROOT, entry.metadata.archive_name(ArchiveState.MERGED)
+            )
+            build_handler.set_client(DOCKER_CLIENT)
+        except Exception as e:
+            print(
+                f"[ERROR] {id} ({entry.metadata.repo} #PR {entry.metadata.pr_number}) {type(e)}: {e}",
+                file=sys.stderr,
+            )
+            continue
+
+        results[id] = {}
+        with build_handler:
+            steps = [
+                ("compilation", build_handler.compile_repo),
+                ("test", build_handler.test_repo),
+            ]
+            for task, action in steps:
+                try:
+                    print(f"Executing {task}...")
+                    action()
+                    print(
+                        f"{task} executed successfully on {id} ({entry.metadata.repo} #PR {entry.metadata.pr_number})"
+                    )
+                    results[id][task] = True
+                except Exception as e:
+                    results[id][task] = False
+                    print(
+                        f"[ERROR] {id} ({entry.metadata.repo} #PR {entry.metadata.pr_number}) {type(e)}: {e}",
+                        file=sys.stderr,
+                    )
+                    break
+
         print("Done")
         percent_cb(int(i / total * 100))
+
+    return results
