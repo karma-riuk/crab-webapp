@@ -9,7 +9,7 @@ router = Blueprint('answers', __name__, url_prefix='/answers')
 ALLOWED_EXT = {'json'}
 
 
-def validate_json_format(data: str) -> dict[str, str]:
+def validate_json_format_for_comment_gen(data: str) -> dict[str, str]:
     try:
         obj = json.loads(data)
         if not isinstance(obj, dict):
@@ -32,7 +32,7 @@ def submit_comments():
         return jsonify({'error': 'Only JSON files are allowed'}), 400
     data = file.read().decode()
     try:
-        validated = validate_json_format(data)
+        validated = validate_json_format_for_comment_gen(data)
     except InvalidJsonFormatError as e:
         return jsonify({'error': 'Invalid JSON format', 'message': str(e)}), 400
 
