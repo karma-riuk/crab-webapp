@@ -16,7 +16,6 @@ DOCKER_CLIENT = docker.from_env()
 def evaluate_comments(answers: dict[str, str], percent_cb):
     total = len(answers)
     results = {}
-    print(REFERENCE_MAP.keys())
     for i, (id_, gen) in enumerate(answers.items(), 1):
         if id_ not in REFERENCE_MAP:
             print(f"[WARNING] skipping {id} since it is not present in dataset", file=sys.stderr)
