@@ -38,15 +38,15 @@ def evaluate_comments(answers: dict[str, str], percent_cb):
 
 
 def evaluate_refinement(answers: dict[str, dict[str, str]], percent_cb):
-    print("Processing refinement...")
     total = len(answers)
     results = {}
-    for i, (id, value) in enumerate(answers.items(), 1):
-        print(f"Processing {id}...")
+    for i, (id, changes) in enumerate(answers.items(), 1):
+        print(f"[INFO] Processing {id} ({i}/{total}: {i/total:.2%})...")
         if id not in REFERENCE_MAP:
             print(f"[WARNING] skipping {id} since it is not present in dataset", file=sys.stderr)
             continue
         entry = REFERENCE_MAP[id]
+        print(f"[INFO] {id} info: {entry.metadata.repo} #PR {entry.metadata.pr_number}")
         try:
             build_handler = get_build_handler(
                 ARCHIVES_ROOT, entry.metadata.archive_name(ArchiveState.MERGED)
@@ -67,11 +67,9 @@ def evaluate_refinement(answers: dict[str, dict[str, str]], percent_cb):
             ]
             for task, action in steps:
                 try:
-                    print(f"Executing {task}...")
+                    print(f"[INFO] Executing {task}...")
                     action()
-                    print(
-                        f"{task} executed successfully on {id} ({entry.metadata.repo} #PR {entry.metadata.pr_number})"
-                    )
+                    print(f"[INFO] {task} executed successfully on {id}")
                     results[id][task] = True
                 except Exception as e:
                     results[id][task] = False
@@ -81,7 +79,7 @@ def evaluate_refinement(answers: dict[str, dict[str, str]], percent_cb):
                     )
                     break
 
-        print("Done")
+        print(f"[INFO] Done with {id}...")
         percent_cb(int(i / total * 100))
 
     return results
