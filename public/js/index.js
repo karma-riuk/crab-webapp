@@ -77,7 +77,10 @@ document.getElementById("upload-btn").onclick = async () => {
             const commentCell = row.insertCell();
             const scoreCell = row.insertCell();
 
-            commentCell.innerHTML = `<span class='comment-cell'>${info["proposed_comment"]}</span>`;
+            const span = document.createElement("span");
+            span.className = "comment-cell";
+            span.textContent = info["proposed_comment"];
+            commentCell.appendChild(span);
             scoreCell.textContent = info["max_bleu_score"].toFixed(2);
         } else {
             const compiledCell = row.insertCell();
