@@ -94,7 +94,7 @@ socket.on("started-processing", () => {
     setProgress(0);
 });
 
-socket.on("successul-upload", () => {
+socket.on("successful-upload", () => {
     statusEl.style.color = "green";
     statusEl.textContent = "Upload succeeded!";
 });
