@@ -44,19 +44,27 @@ h1 {
     width: 100%;
 }
 
-#results-container {
+.results-container {
     display: none;
+    justify-items: center;
 }
 
-#results-container h3 {
+.results-container h3 {
     display: flex;
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
 }
 
-table {
+.results-container#comment table {
     width: 100%;
+}
+
+.results-container#refinement table {
+    text-align: center;
+}
+
+table {
     border-collapse: collapse;
 }
 
@@ -102,11 +110,11 @@ table tbody td:nth-child(1) {
 }
 
 /* style score header */
-table th:nth-child(3) {
+.results-container#comment table th:nth-child(3) {
     white-space: nowrap;
 }
 
 /* style score column values */
-table tbody td:nth-child(3) {
+.results-container#comment table tbody td:nth-child(3) {
     text-align: right;
 }

@@ -56,14 +56,29 @@
         </div>
     </div>
 
-    <div id="results-container">
-        <h3>Results<button id="download-results">Download</button></h3>
+    <div id="comment" class="results-container">
+        <h3>Results Comment Generation<button class="download-results">Download</button></h3>
         <table class="sortable">
             <thead>
                 <tr>
                     <th>id</th>
                     <th>Proposed comment</th>
                     <th>Max bleu score</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="refinement" class="results-container">
+        <h3>Results Code Refinement<button class="download-results">Download</button></h3>
+        <table class="sortable">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Compiled</th>
+                    <th>Tested</th>
                 </tr>
             </thead>
             <tbody>
