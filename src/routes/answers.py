@@ -44,7 +44,7 @@ def validate_json_format_for_code_refinement(data: str) -> dict[str, dict[str, s
         raise InvalidJsonFormatError()
 
 
-@router.route('/submit/comments', methods=['POST'])
+@router.route('/submit/comment', methods=['POST'])
 def submit_comments():
     file = request.files.get('file')
     if file is None or file.filename is None or file.filename.split('.')[-1] not in ALLOWED_EXT:
