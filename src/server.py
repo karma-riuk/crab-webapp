@@ -47,5 +47,5 @@ def init_socketio(app):
 socketio = init_socketio(app)
 
 if __name__ == '__main__':
-    port = int(os.getenv('PORT', 3000))
-    socketio.run(app, port=port)
+    port = int(os.getenv('PORT', 45003))
+    socketio.run(app, host="0.0.0.0", port=port)
