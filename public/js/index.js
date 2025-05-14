@@ -5,7 +5,15 @@ const progressBar = document.getElementById("progress-bar");
 const progressText = document.getElementById("progress-text");
 const statusEl = document.getElementById("status");
 
-const resultsContainer = document.getElementById("results-container");
+const commentResultsContainer = document.querySelector(
+    ".results-container#comment",
+);
+const refinementResultsContainer = document.querySelector(
+    ".results-container#refinement",
+);
+
+const tick = "✅";
+const cross = "❌";
 
 let results = {};
 
@@ -47,6 +55,12 @@ document.getElementById("upload-btn").onclick = async () => {
 
     results = json;
     progressContainer.style.display = "none";
+
+    const resultsContainer =
+        type === "comment"
+            ? commentResultsContainer
+            : refinementResultsContainer;
+
     resultsContainer.style.display = "block";
 
     const tbody = resultsContainer.querySelector("table tbody");
@@ -55,26 +69,38 @@ document.getElementById("upload-btn").onclick = async () => {
     Object.entries(results).forEach(([id, info]) => {
         const row = tbody.insertRow(); // create a new row
         const idCell = row.insertCell(); // cell 1: id
-        const commentCell = row.insertCell(); // cell 2: proposed comment
-        const scoreCell = row.insertCell(); // cell 3: bleu score
-
         idCell.textContent = id;
-        commentCell.innerHTML = `<span class='comment-cell'>${info["proposed_comment"]}</span>`;
-        scoreCell.textContent = info["max_bleu_score"].toFixed(2);
+
+        if (type == "comment") {
+            const commentCell = row.insertCell();
+            const scoreCell = row.insertCell();
+
+            commentCell.innerHTML = `<span class='comment-cell'>${info["proposed_comment"]}</span>`;
+            scoreCell.textContent = info["max_bleu_score"].toFixed(2);
+        } else {
+            const compiledCell = row.insertCell();
+            const testedCell = row.insertCell();
+
+            compiledCell.textContent =
+                info["compilation"] || false ? tick : cross;
+            testedCell.textContent = info["test"] || false ? tick : cross;
+        }
     });
 };
 
-document.getElementById("download-results").onclick = () => {
-    const dataStr =
-        "data:text/json;charset=utf-8," +
-        encodeURIComponent(JSON.stringify(results));
-    const dlAnchorElem = document.createElement("a");
-    dlAnchorElem.setAttribute("href", dataStr);
-    dlAnchorElem.setAttribute("download", "results.json");
-    document.body.appendChild(dlAnchorElem);
-    dlAnchorElem.click();
-    document.body.removeChild(dlAnchorElem);
-};
+[...document.getElementsByClassName("download-results")].forEach((e) => {
+    e.onclick = () => {
+        const dataStr =
+            "data:text/json;charset=utf-8," +
+            encodeURIComponent(JSON.stringify(results));
+        const dlAnchorElem = document.createElement("a");
+        dlAnchorElem.setAttribute("href", dataStr);
+        dlAnchorElem.setAttribute("download", "results.json");
+        document.body.appendChild(dlAnchorElem);
+        dlAnchorElem.click();
+        document.body.removeChild(dlAnchorElem);
+    };
+});
 
 function setProgress(percent) {
     progressBar.value = percent;
