@@ -13,79 +13,107 @@
 </head>
 
 <body>
-    <h1>
-        <img src="/img/crab.png" alt="Crab" class="crab-icon">
-        Crab Webapp
-    </h1>
+    <header class="site-header">
+        <h1>
+            <img src="/img/crab.png" alt="Crab" class="crab-icon">
+            Crab Webapp
+        </h1>
+        <button id="info-button" class="info-btn" aria-label="About this project">About</button>
+    </header>
+    <main>
 
-    <fieldset>
-        <legend><strong>Download a Dataset</strong></legend>
-        <label for="dataset-select">Dataset:</label>
-        <select id="dataset-select">
-            <option value="comment_generation">Comment Generation</option>
-            <option value="code_refinement">Code Refinement</option>
-        </select>
-        <label>
-            <input type="checkbox" id="with-context">
-            Include context
-        </label>
-        <br /><br />
-        <button id="download-dataset">Download</button>
-    </fieldset>
+        <fieldset>
+            <legend><strong>Download a Dataset</strong></legend>
+            <label for="dataset-select">Dataset:</label>
+            <select id="dataset-select">
+                <option value="comment_generation">Comment Generation</option>
+                <option value="code_refinement">Code Refinement</option>
+            </select>
+            <label>
+                <input type="checkbox" id="with-context">
+                Include context
+            </label>
+            <br /><br />
+            <button id="download-dataset">Download</button>
+        </fieldset>
 
-    <fieldset>
-        <legend><strong>Upload Your Answers</strong></legend>
-        <label for="answer-cype">Type:</label>
-        <select id="answer-cype">
-            <option value="comment">Comment Generation</option>
-            <option value="refinement">Code Refinement</option>
-        </select>
-        <br /><br />
-        <input type="file" id="file-cnput" accept="application/json" />
-        <br /><br />
-        <button id="upload-btn">Upload JSON</button>
-        <span id="status" style="color: green;"> </span>
-    </fieldset>
+        <fieldset>
+            <legend><strong>Upload Your Answers</strong></legend>
+            <label for="answer-cype">Type:</label>
+            <select id="answer-cype">
+                <option value="comment">Comment Generation</option>
+                <option value="refinement">Code Refinement</option>
+            </select>
+            <br /><br />
+            <input type="file" id="file-cnput" accept="application/json" />
+            <br /><br />
+            <button id="upload-btn">Upload JSON</button>
+            <span id="status" style="color: green;"> </span>
+        </fieldset>
 
 
-    <div id="progress-container">
-        <h3>Processing answers...</h3>
-        <div>
-            <progress id="progress-bar" value="0" max="100"></progress>
-            <span id="progress-text">0%</span>
+        <div id="progress-container">
+            <h3>Processing answers...</h3>
+            <div>
+                <progress id="progress-bar" value="0" max="100"></progress>
+                <span id="progress-text">0%</span>
+            </div>
         </div>
-    </div>
 
-    <div id="comment" class="results-container">
-        <h3>Results Comment Generation<button class="download-results">Download</button></h3>
-        <table class="sortable">
-            <thead>
-                <tr>
-                    <th>id</th>
-                    <th>Proposed comment</th>
-                    <th>Max bleu score</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
+        <div id="comment" class="results-container">
+            <h3>Results Comment Generation<button class="download-results">Download</button></h3>
+            <table class="sortable">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Proposed comment</th>
+                        <th>Max bleu score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
 
-    <div id="refinement" class="results-container">
-        <h3>Results Code Refinement<button class="download-results">Download</button></h3>
-        <table class="sortable">
-            <thead>
-                <tr>
-                    <th>id</th>
-                    <th>Compiled</th>
-                    <th>Tested</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
+        <div id="refinement" class="results-container">
+            <h3>Results Code Refinement<button class="download-results">Download</button></h3>
+            <table class="sortable">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Compiled</th>
+                        <th>Tested</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
 
+        <div id="modal-overlay" class="modal-overlay hidden">
+            <div class="modal-container">
+                <button id="modal-close" class="modal-close" aria-label="Close">&times;</button>
+                <h2>About this project</h2>
+                <div>
+                    <p>CRAB (Code Review Automation Benchmark) is a research-driven platform designed to evaluate deep
+                        learning models for code review tasks. Developed as part of a master's thesis at the Università
+                        della Svizzera italiana, CRAB provides a high-quality, curated benchmark dataset of Java code
+                        review triplets: submitted code, reviewer comment, and revised code. Each instance is manually
+                        validated to ensure that reviewer comments directly address code issues and that the revised
+                        code implements the feedback accurately. </p>
+
+                    <p>The platform supports two core tasks: generating human-like review comments and refining code
+                        based on those comments. It also accounts for paraphrased feedback and alternative valid code
+                        revisions, offering a more realistic and robust evaluation. CRAB addresses the shortcomings of
+                        existing datasets by eliminating noise and ensuring functional correctness through testing.
+                        Researchers can upload model predictions to receive standardized evaluations, making CRAB an
+                        essential tool for advancing automated code review technologies.</p>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
 </body>
 
 </html>

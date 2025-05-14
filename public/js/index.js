@@ -129,3 +129,25 @@ socket.on("successful-upload", () => {
     statusEl.style.color = "green";
     statusEl.textContent = "Upload succeeded!";
 });
+
+// INFO-MODAL LOGIC
+const infoButton = document.getElementById("info-button");
+const modalOverlay = document.getElementById("modal-overlay");
+const modalClose = document.getElementById("modal-close");
+
+// open modal
+infoButton.addEventListener("click", () => {
+    modalOverlay.classList.remove("hidden");
+});
+
+// close modal via “×” button
+modalClose.addEventListener("click", () => {
+    modalOverlay.classList.add("hidden");
+});
+
+// also close if you click outside the white box
+modalOverlay.addEventListener("click", (e) => {
+    if (e.target === modalOverlay) {
+        modalOverlay.classList.add("hidden");
+    }
+});
