@@ -41,12 +41,6 @@ class BuildHandler(ABC):
         rmtree(self.path)
 
     def compile_repo(self) -> None:
-        def timeout_handler(signum, frame):
-            raise TimeoutError("Tests exceeded time limit")
-
-        signal.signal(signal.SIGALRM, timeout_handler)
-        signal.alarm(3600)  # Set timeout to 1 hour (3600 seconds)
-
         try:
             exec_result = self.container.exec_run(self.compile_cmd())
             output = clean_output(exec_result.output)
@@ -61,12 +55,6 @@ class BuildHandler(ABC):
             signal.alarm(0)  # Cancel the alarm
 
     def test_repo(self) -> None:
-        def timeout_handler(signum, frame):
-            raise TimeoutError("Tests exceeded time limit")
-
-        signal.signal(signal.SIGALRM, timeout_handler)
-        signal.alarm(3600)  # Set timeout to 1 hour (3600 seconds)
-
         try:
             exec_result = self.container.exec_run(self.test_cmd())
             output = clean_output(exec_result.output)
@@ -582,10 +570,8 @@ def get_coverage_for_file(xml_file: str, target_fully_qualified_class: str, base
 
 def get_build_handler(root: str, repo: str, verbose: bool = False) -> BuildHandler:
     """
-    Get a BuildHandler for a repository, where `repo` may be either:
-
-      - a directory under `root`, or
-      - a .tar.gz/.tgz file in `root` containing your repo
+    Get a BuildHandler for a repository, where `repo` .tar.gz/.tgz file in
+    `root` containing your repo
 
     Returns:
         an instance of GradleHandler or MavenHandler
@@ -596,25 +582,23 @@ def get_build_handler(root: str, repo: str, verbose: bool = False) -> BuildHandl
     if os.path.isfile(path) and tarfile.is_tarfile(path):
         if verbose:
             print(f"Archive detected: extracting {path}…")
-        path = tempfile.mkdtemp(prefix="repo_")
+        tmp_dir = tempfile.mkdtemp(prefix="crab_repo_")
         with tarfile.open(path, "r:gz") as tar:
-            tar.extractall(path)
-
-    # 2) Otherwise it must be a directory
-    elif not os.path.isdir(path):
+            tar.extractall(tmp_dir)
+    else:
         raise NotValidDirectory(f"The path {path!r} is neither a directory nor a tar archive.")
 
-    # 3) Now scan for build files
+    # 2) Now scan for build files
     to_keep = {"pom.xml", "build.gradle"}
-    for entry in os.scandir(path):
+    for entry in os.scandir(tmp_dir):
         if entry.is_file() and entry.name in to_keep:
             if verbose:
                 print(f"Found {entry.name!r} in {path!r}, returning handler")
 
             if entry.name == "build.gradle":
-                return GradleHandler(path, entry.name)
+                return GradleHandler(tmp_dir, entry.name)
             else:
-                return MavenHandler(path, entry.name)
+                return MavenHandler(tmp_dir, entry.name)
 
     if os.path.exists(path) and os.path.isdir(path):
         rmtree(path)
