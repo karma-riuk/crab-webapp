@@ -84,6 +84,7 @@ def evaluate_refinement(answers: dict[str, dict[str, str]], percent_cb):
                     results[id][task] = True
                 except Exception as e:
                     results[id][task] = False
+                    results[id][task + "_error_msg"] = str(e)
                     print(
                         f"[ERROR] {id} ({entry.metadata.repo} #PR {entry.metadata.pr_number}) {type(e)}: {e}",
                         file=sys.stderr,
