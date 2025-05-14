@@ -28,7 +28,6 @@ def evaluate_comments(answers: dict[str, str], percent_cb):
             scores.append(score)
             max_score = max(max_score, score)
 
-        print(scores)
         results[id_] = {
             'max_bleu_score': max_score,
             'bleu_scores': scores,
