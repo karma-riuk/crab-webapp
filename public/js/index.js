@@ -56,6 +56,8 @@ document.getElementById("upload-btn").onclick = async () => {
     results = json;
     progressContainer.style.display = "none";
 
+    commentResultsContainer.style.display = "none";
+    refinementResultsContainer.style.display = "none";
     const resultsContainer =
         type === "comment"
             ? commentResultsContainer
