@@ -19,7 +19,7 @@ def evaluate_comments(answers: dict[str, str], percent_cb):
     print(REFERENCE_MAP.keys())
     for i, (id_, gen) in enumerate(answers.items(), 1):
         if id_ not in REFERENCE_MAP:
-            print(f'id: "{id_}" is not present in the dataset', file=sys.stderr)
+            print(f"[WARNING] skipping {id} since it is not present in dataset", file=sys.stderr)
             continue
         entry = REFERENCE_MAP[id_]
         max_score = 0
