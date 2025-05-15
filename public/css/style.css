@@ -5,22 +5,11 @@
     align-items: center;
     justify-content: space-between;
     top: 0;
-    width: 100vw;
     max-width: 100vw;
     z-index: 1000;
     background: #fafafa;
     border-bottom: 1px solid #ddd;
     padding: 0 1em;
-}
-
-.info-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-}
-
-button {
-    cursor: pointer;
 }
 
 body {
@@ -43,9 +32,17 @@ fieldset {
 
 button {
     padding: 0.5em 1em;
+    cursor: pointer;
 }
 
-h1 {
+.info-btn {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    padding: 0;
+}
+
+header #page-title {
     display: flex;
     align-items: center;
     gap: 0.5rem;

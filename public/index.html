@@ -14,11 +14,11 @@
 
 <body>
     <header class="site-header">
-        <h1>
+        <h3 id="page-title">
             <img src="/img/crab.png" alt="Crab" class="crab-icon">
             Crab Webapp
-        </h1>
-        <button id="info-button" class="info-btn" aria-label="About this project">About</button>
+        </h3>
+        <button id="info-button" class="info-btn">About</button>
     </header>
     <main>
 
@@ -48,7 +48,7 @@
             <input type="file" id="file-cnput" accept="application/json" />
             <br /><br />
             <button id="upload-btn">Upload JSON</button>
-            <span id="status" style="color: green;"> </span>
+            <span id="status" class="hidden" style="color: green;"> </span>
         </fieldset>
 
         <fieldset>
@@ -57,7 +57,7 @@
             <input type="url" id="url" placeholder="https://gym.si.usi.ch:45003/results/XXXX" size=50 required />
             <br /><br />
             <button id="request-status">Request status</button>
-            <span id="status" style="color: green;"> </span>
+            <span id="status" class="hidden" style="color: green;"> </span>
         </fieldset>
 
 
