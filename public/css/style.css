@@ -169,8 +169,8 @@ table tbody td:nth-child(1) {
     background: #fff;
     padding: 1.5rem;
     border-radius: 8px;
-    max-width: 75vw;
     min-width: 30vw;
+    max-width: 75vw;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     position: relative;
 }
@@ -188,4 +188,10 @@ table tbody td:nth-child(1) {
 
 .modal-container h2 {
     margin-top: 0;
+}
+
+.json-schemas {
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
 }

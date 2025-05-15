@@ -144,10 +144,63 @@
             </div>
         </template>
         <template id="info-upload">
-            <h2>Uploading results</h2>
-            <div>
-                yes
-            </div>
+            <h2>Uploading Results</h2>
+            <section>
+                <p>
+                    After downloading a dataset and generating your predictions for either task, you can upload your
+                    results here to start the evaluation process.
+                </p>
+                <p>
+                    Your uploaded JSON file must follow one of the schemas described below, depending on the selected
+                    task. Once uploaded, the system will begin evaluating your submission. A progress bar will appear to
+                    show how far along the evaluation is.
+                </p>
+                <p>
+                    For <strong>Code Refinement</strong>, a link will also be displayed. This link allows you to safely
+                    close the browser tab and later check the evaluation progress by pasting the link into the <em>"Get
+                        status of ongoing process"</em> section. More information is available in that section.
+                </p>
+                <section class="json-schemas">
+                    <details>
+                        <summary>
+                            <strong>Comment Generation</strong>
+                        </summary>
+                        <p>
+                            Submit a JSON object where each key is a string ID and each value is the generated comment.
+                        </p>
+                        <pre><code>
+{
+    "1234": "This method lacks null checks.",
+    "5678": "Consider renaming this variable for clarity."
+} 
+                    </code></pre>
+
+                    </details>
+                    <details>
+                        <summary><strong>Code Refinement</strong></summary>
+                        <p>
+                            Submit a JSON object where each key is a string ID, and the value is another object that
+                            maps
+                            file
+                            paths (relative to the top-level directory) to the new file content.
+                        </p>
+                        <pre><code>
+{
+    "1234": {
+        "src/Main.java": "public class Main { /* updated code */ }"
+    },
+    "5678": {
+        "utils/Helper.java": "public class Helper { /* improved logic */ }"
+    }
+}
+                    </code></pre>
+
+                        <p>
+                            Make sure your file strictly follows the expected format to avoid upload errors.
+                        </p>
+                    </details>
+                </section>
+            </section>
         </template>
         <template id="info-results">
             <h2>Getting information of ongoing process</h2>
