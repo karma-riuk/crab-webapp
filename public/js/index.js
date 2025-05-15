@@ -109,7 +109,7 @@ document.getElementById("upload-btn").onclick = async () => {
 
 function setProgress(percent) {
     progressBar.value = percent;
-    progressText.textContent = `${percent}%`;
+    progressText.textContent = `${percent.toFixed(0)}%`;
 }
 
 socket.on("progress", (data) => {
