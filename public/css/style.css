@@ -35,11 +35,18 @@ button {
     cursor: pointer;
 }
 
-.info-btn {
+header .info-btn {
     background: none;
     border: none;
     font-size: 1rem;
     padding: 0;
+}
+
+fieldset .info-btn {
+    aspect-ratio: 1;
+    padding: .35em .7em;
+    border-radius: 100%;
+    border-width: 1px;
 }
 
 header #page-title {
@@ -180,4 +187,8 @@ table tbody td:nth-child(1) {
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
+}
+
+.modal-container h2 {
+    margin-top: 0;
 }

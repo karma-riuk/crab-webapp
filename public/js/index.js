@@ -135,13 +135,21 @@ socket.on("successful-upload", () => {
 });
 
 // INFO-MODAL LOGIC
-const infoButton = document.getElementById("info-button");
+const aboutButton = document.getElementById("about-button");
 const modalOverlay = document.getElementById("modal-overlay");
+const modalContent = document.getElementById("modal-content");
 const modalClose = document.getElementById("modal-close");
 
-// open modal
-infoButton.addEventListener("click", () => {
+function show_modal_with(content) {
     modalOverlay.classList.remove("hidden");
+    modalContent.innerHTML = "";
+    modalContent.appendChild(content);
+    modalOverlay.focus();
+}
+
+// open modal
+aboutButton.addEventListener("click", () => {
+    show_modal_with(about.content.cloneNode(true));
 });
 
 // close modal via “×” button
@@ -154,6 +162,17 @@ modalOverlay.addEventListener("click", (e) => {
     if (e.target === modalOverlay) {
         modalOverlay.classList.add("hidden");
     }
+});
+
+modalOverlay.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        modalOverlay.classList.add("hidden");
+        console.log("hiding");
+    }
+});
+
+window["info-download-btn"].addEventListener("click", (e) => {
+    show_modal_with(window["info-download"].content.cloneNode(true));
 });
 
 document.getElementById("request-status").onclick = () => {

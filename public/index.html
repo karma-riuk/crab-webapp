@@ -7,6 +7,7 @@
     <link rel="icon" type="image/x-icon" href="/img/crab.png">
     <title>Dataset Downloader & Answer Uploader</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script defer src="js/index.js"></script>
     <script defer src="js/sorttable.js"></script>
@@ -18,12 +19,16 @@
             <img src="/img/crab.png" alt="Crab" class="crab-icon">
             Crab Webapp
         </h3>
-        <button id="info-button" class="info-btn">About</button>
+        <button id="about-button" class="info-btn">About</button>
     </header>
     <main>
 
         <fieldset>
-            <legend><strong>Download a Dataset</strong></legend>
+            <legend>
+                <strong>Download a Dataset</strong>
+                <button id="info-download-btn" class='info-btn'><i class="fa fa-question" ></i></button>
+            </legend>
+
             <label for="dataset-select">Dataset:</label>
             <select id="dataset-select">
                 <option value="comment_generation">Comment Generation</option>
@@ -99,29 +104,39 @@
             </table>
         </div>
 
-        <div id="modal-overlay" class="modal-overlay hidden">
+        <div id="modal-overlay" class="modal-overlay hidden" tabindex=-1>
             <div class="modal-container">
                 <button id="modal-close" class="modal-close" aria-label="Close">&times;</button>
-                <h2>About this project</h2>
-                <div>
-                    <p>CRAB (Code Review Automation Benchmark) is a research-driven platform designed to evaluate deep
-                        learning models for code review tasks. Developed as part of a master's thesis at the Università
-                        della Svizzera italiana, CRAB provides a high-quality, curated benchmark dataset of Java code
-                        review triplets: submitted code, reviewer comment, and revised code. Each instance is manually
-                        validated to ensure that reviewer comments directly address code issues and that the revised
-                        code implements the feedback accurately. </p>
-
-                    <p>The platform supports two core tasks: generating human-like review comments and refining code
-                        based on those comments. It also accounts for paraphrased feedback and alternative valid code
-                        revisions, offering a more realistic and robust evaluation. CRAB addresses the shortcomings of
-                        existing datasets by eliminating noise and ensuring functional correctness through testing.
-                        Researchers can upload model predictions to receive standardized evaluations, making CRAB an
-                        essential tool for advancing automated code review technologies.</p>
-
-                </div>
+                <div id="modal-content"></div>
             </div>
         </div>
 
+        <template id="about">
+            <h2>About this project</h2>
+            <div>
+                <p>CRAB (Code Review Automation Benchmark) is a research-driven platform designed to evaluate deep
+                    learning models for code review tasks. Developed as part of a master's thesis at the Università
+                    della Svizzera italiana, CRAB provides a high-quality, curated benchmark dataset of Java code review
+                    triplets: submitted code, reviewer comment, and revised code. Each instance is manually validated to
+                    ensure that reviewer comments directly address code issues and that the revised code implements the
+                    feedback accurately. </p>
+
+                <p>The platform supports two core tasks: generating human-like review comments and refining code based
+                    on those comments. It also accounts for paraphrased feedback and alternative valid code revisions,
+                    offering a more realistic and robust evaluation. CRAB addresses the shortcomings of existing
+                    datasets by eliminating noise and ensuring functional correctness through testing. Researchers can
+                    upload model predictions to receive standardized evaluations, making CRAB an essential tool for
+                    advancing automated code review technologies.</p>
+
+            </div>
+        </template>
+
+        <template id="info-download">
+            <h2>Downloading the datset</h2>
+            <div>
+                yes
+            </div>
+        </template>
     </main>
 </body>
 
