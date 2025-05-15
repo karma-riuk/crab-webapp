@@ -39,10 +39,15 @@ def evaluate_comments(answers: dict[str, str], percent_cb):
 
 
 def evaluate_refinement(answers: dict[str, dict[str, str]], percent_cb):
-    total = len(answers)
+    n_answers = len(answers)
+    n_steps = 4   # creating build handler + injecting the files in the repo + compilation + testing
+    total_number_of_steps = n_answers * n_steps
+    current_progress = 0
     results = {}
-    for i, (id, changes) in enumerate(answers.items(), 1):
-        print(f"[INFO] Processing {id} ({i}/{total}: {i/total:.2%})...")
+    for i, (id, changes) in enumerate(answers.items()):
+        print(f"[INFO] Processing {id} ({i}/{n_answers}: {i/n_answers:.2%})...")
+        current_progress = i * n_steps
+        percent_cb(current_progress / total_number_of_steps * 100)
         if id not in REFERENCE_MAP:
             print(f"[WARNING] skipping {id} since it is not present in dataset", file=sys.stderr)
             continue
@@ -53,6 +58,8 @@ def evaluate_refinement(answers: dict[str, dict[str, str]], percent_cb):
                 ARCHIVES_ROOT, entry.metadata.archive_name(ArchiveState.MERGED)
             )
             build_handler.set_client(DOCKER_CLIENT)
+            current_progress += 1
+            percent_cb(current_progress / total_number_of_steps * 100)
         except Exception as e:
             print(
                 f"[ERROR] {id} ({entry.metadata.repo} #PR {entry.metadata.pr_number}) {type(e)}: {e}",
@@ -69,6 +76,8 @@ def evaluate_refinement(answers: dict[str, dict[str, str]], percent_cb):
                 os.makedirs(dirname)
             with open(full_path, "w") as f:
                 f.write(change)
+        current_progress += 1
+        percent_cb(current_progress / total_number_of_steps * 100)
 
         results[id] = {}
         with build_handler:
@@ -82,6 +91,8 @@ def evaluate_refinement(answers: dict[str, dict[str, str]], percent_cb):
                     action()
                     print(f"[INFO] {task} executed successfully on {id}")
                     results[id][task] = True
+                    current_progress += 1
+                    percent_cb(current_progress / total_number_of_steps * 100)
                 except Exception as e:
                     results[id][task] = False
                     results[id][task + "_error_msg"] = str(e)
@@ -92,6 +103,5 @@ def evaluate_refinement(answers: dict[str, dict[str, str]], percent_cb):
                     break
 
         print(f"[INFO] Done with {id}...")
-        percent_cb(int(i / total * 100))
 
     return results
