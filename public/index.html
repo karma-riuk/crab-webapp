@@ -138,9 +138,71 @@
         </template>
 
         <template id="info-download">
-            <h2>Downloading the datset</h2>
+            <h2>Downloading the Dataset</h2>
             <div>
-                yes
+                <p>
+                    When you download a dataset, you'll receive a ZIP archive containing a JSON file. The structure of
+                    this file depends on the selected task.
+                </p>
+
+                <section class="json-schemas">
+                    <details>
+                        <summary><strong>Comment Generation</strong></summary>
+                        <p>The JSON maps each ID to an object with:</p>
+                        <ul>
+                            <li><strong>files</strong>: a map of filenames to their content at the start of the pull
+                                request.</li>
+                            <li><strong>diffs</strong>: a map of filenames to the diff that was applied to each file
+                                before
+                                the comment was made.</li>
+                        </ul>
+                        <pre><code>{
+    "1234": {
+        "files": {
+            "src/Main.java": "public class Main { ... }"
+        },
+        "diffs": {
+            "src/Main.java": "@@ -1,3 +1,6 @@ ..."
+        }
+    }
+}</code></pre>
+                    </details>
+
+                    <details>
+                        <summary><strong>Code Refinement</strong></summary>
+                        <p>The JSON structure is similar to comment generation, with one additional field:</p>
+                        <ul>
+                            <li><strong>files</strong>: the initial version of each file in the PR.</li>
+                            <li><strong>diffs</strong>: the diff applied before the comment was made.</li>
+                            <li><strong>comments</strong>: a list of comments, each with a body, the file it refers to,
+                                and
+                                the exact location of the comment.</li>
+                        </ul>
+                        <pre><code lang="json">{
+    "5678": {
+        "files": { ... },
+        "diffs": { ... },
+        "comments": [
+            {
+                "body": "Consider simplifying this logic.",
+                "file": "src/Util.java",
+                "location": {
+                    "start_line": 42,
+                    "end_line": 45
+                }
+            }
+        ]
+    }
+}</code></pre>
+                    </details>
+                </section>
+
+                <h3>With Context (Optional)</h3>
+                <p>
+                    You can choose to download the dataset with full repository context — the state of the entire
+                    codebase at the time the PR was created. This may help your model better understand the broader
+                    project structure and dependencies outside of the changed files.
+                </p>
             </div>
         </template>
         <template id="info-upload">
