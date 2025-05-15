@@ -54,16 +54,16 @@ document.getElementById("upload-btn").onclick = async () => {
     }
 
     results = json;
-    progressContainer.style.display = "none";
+    progressContainer.classList.add("hidden");
 
-    commentResultsContainer.style.display = "none";
-    refinementResultsContainer.style.display = "none";
+    commentResultsContainer.classList.add("hidden");
+    refinementResultsContainer.classList.add("hidden");
     const resultsContainer =
         type === "comment"
             ? commentResultsContainer
             : refinementResultsContainer;
 
-    resultsContainer.style.display = "block";
+    resultsContainer.classList.remove("hidden");
 
     const tbody = resultsContainer.querySelector("table tbody");
     tbody.innerHTML = "";
@@ -121,7 +121,7 @@ socket.on("progress", (data) => {
 });
 
 socket.on("started-processing", () => {
-    progressContainer.style.display = "block";
+    progressContainer.classList.remove("hidden");
     setProgress(0);
 });
 
