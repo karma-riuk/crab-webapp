@@ -26,7 +26,7 @@
         <fieldset>
             <legend>
                 <strong>Download a Dataset</strong>
-                <button id="info-download-btn" class='info-btn'><i class="fa fa-question" ></i></button>
+                <button id="info-download-btn" class='info-btn'><i class="fa fa-info" ></i></button>
             </legend>
 
             <label for="dataset-select">Dataset:</label>
@@ -43,7 +43,10 @@
         </fieldset>
 
         <fieldset>
-            <legend><strong>Upload Your Answers</strong></legend>
+            <legend>
+                <strong>Upload Your Answers</strong>
+                <button id="info-upload-btn" class='info-btn'><i class="fa fa-info" ></i></button>
+            </legend>
             <label for="answer-cype">Type:</label>
             <select id="answer-cype">
                 <option value="comment">Comment Generation</option>
@@ -57,7 +60,10 @@
         </fieldset>
 
         <fieldset>
-            <legend><strong>Get status of ongoing process</strong></legend>
+            <legend>
+                <strong>Get status of ongoing process</strong>
+                <button id="info-results-btn" class='info-btn'><i class="fa fa-info" ></i></button>
+            </legend>
             <label for="url">URL:</label>
             <input type="url" id="url" placeholder="https://gym.si.usi.ch:45003/results/XXXX" size=50 required />
             <br /><br />
@@ -133,6 +139,18 @@
 
         <template id="info-download">
             <h2>Downloading the datset</h2>
+            <div>
+                yes
+            </div>
+        </template>
+        <template id="info-upload">
+            <h2>Uploading results</h2>
+            <div>
+                yes
+            </div>
+        </template>
+        <template id="info-results">
+            <h2>Getting information of ongoing process</h2>
             <div>
                 yes
             </div>

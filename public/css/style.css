@@ -43,10 +43,7 @@ header .info-btn {
 }
 
 fieldset .info-btn {
-    aspect-ratio: 1;
-    padding: .35em .7em;
-    border-radius: 100%;
-    border-width: 1px;
+    padding: revert;
 }
 
 header #page-title {

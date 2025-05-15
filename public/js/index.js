@@ -171,8 +171,10 @@ modalOverlay.addEventListener("keydown", (e) => {
     }
 });
 
-window["info-download-btn"].addEventListener("click", (e) => {
-    show_modal_with(window["info-download"].content.cloneNode(true));
+["download", "upload", "results"].forEach((section) => {
+    window[`info-${section}-btn`].addEventListener("click", () => {
+        show_modal_with(window[`info-${section}`].content.cloneNode(true));
+    });
 });
 
 document.getElementById("request-status").onclick = () => {
