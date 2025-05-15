@@ -28,6 +28,9 @@ document.getElementById("download-dataset").onclick = () => {
 
 // Upload logic
 document.getElementById("upload-btn").onclick = async () => {
+    statusEl.classList.add("hidden");
+    progressContainer.classList.add("hidden");
+
     const type = document.getElementById("answer-cype").value;
     const fileInput = document.getElementById("file-cnput");
     if (!fileInput.files.length) {
@@ -108,6 +111,7 @@ document.getElementById("upload-btn").onclick = async () => {
 });
 
 function setProgress(percent) {
+    progressContainer.classList.remove("hidden");
     progressBar.value = percent;
     progressText.textContent = `${percent.toFixed(0)}%`;
 }
@@ -121,11 +125,11 @@ socket.on("progress", (data) => {
 });
 
 socket.on("started-processing", () => {
-    progressContainer.classList.remove("hidden");
     setProgress(0);
 });
 
 socket.on("successful-upload", () => {
+    statusEl.classList.remove("hidden");
     statusEl.style.color = "green";
     statusEl.textContent = "Upload succeeded!";
 });
