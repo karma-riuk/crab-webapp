@@ -151,3 +151,7 @@ modalOverlay.addEventListener("click", (e) => {
         modalOverlay.classList.add("hidden");
     }
 });
+
+document.getElementById("request-status").onclick = () => {
+    url.reportValidity();
+};
