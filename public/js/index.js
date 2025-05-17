@@ -3,7 +3,8 @@ const socket = io();
 const progressContainer = document.getElementById("progress-container");
 const progressBar = document.getElementById("progress-bar");
 const progressText = document.getElementById("progress-text");
-const statusEl = document.getElementById("status");
+const uploadStatusEl = document.getElementById("upload-status");
+const statusStatusEl = document.getElementById("status-status");
 
 const commentResultsContainer = document.querySelector(
     ".results-container#comment",
@@ -28,7 +29,7 @@ document.getElementById("download-dataset").onclick = () => {
 
 // Upload logic
 document.getElementById("upload-btn").onclick = async () => {
-    statusEl.classList.add("hidden");
+    uploadStatusEl.classList.add("hidden");
     progressContainer.classList.add("hidden");
 
     const type = document.getElementById("answer-cype").value;
@@ -50,8 +51,9 @@ document.getElementById("upload-btn").onclick = async () => {
 
     const json = await res.json();
     if (!res.ok) {
-        statusEl.style.color = "red";
-        statusEl.textContent =
+        uploadStatusEl.classList.remove("hidden");
+        uploadStatusEl.style.color = "red";
+        uploadStatusEl.textContent =
             json.error + (json.message ? ": " + json.message : "");
         return;
     }
@@ -119,19 +121,22 @@ function setProgress(percent) {
 socket.on("progress", (data) => {
     setProgress(data.percent);
     if (data.percent == 100) {
-        statusEl.style.color = "green";
-        statusEl.textContent = "Processing complete!";
+        uploadStatusEl.style.color = "green";
+        uploadStatusEl.textContent = "Processing complete!";
     }
 });
 
-socket.on("started-processing", () => {
+socket.on("started-processing", (data) => {
     setProgress(0);
+    uploadStatusEl.classList.remove("hidden");
+    uploadStatusEl.style.color = "green";
+    uploadStatusEl.textContent = data["id"];
 });
 
 socket.on("successful-upload", () => {
-    statusEl.classList.remove("hidden");
-    statusEl.style.color = "green";
-    statusEl.textContent = "Upload succeeded!";
+    uploadStatusEl.classList.remove("hidden");
+    uploadStatusEl.style.color = "green";
+    uploadStatusEl.textContent = "Upload succeeded!";
 });
 
 // INFO-MODAL LOGIC
@@ -177,6 +182,23 @@ modalOverlay.addEventListener("keydown", (e) => {
     });
 });
 
-document.getElementById("request-status").onclick = () => {
-    url.reportValidity();
+document.getElementById("request-status").onclick = async () => {
+    if (!uuid.reportValidity()) return;
+    const res = await fetch(`/answers/status/${uuid.value}`, {
+        headers: {
+            "X-Socket-Id": socket.id,
+        },
+    });
+
+    const json = await res.json();
+    if (!res.ok) {
+        statusStatusEl.classList.remove("hidden");
+        statusStatusEl.style.color = "red";
+        statusStatusEl.textContent =
+            json.error + (json.message ? ": " + json.message : "");
+        return;
+    }
+    statusStatusEl.classList.remove("hidden");
+    statusStatusEl.style.color = "green";
+    statusStatusEl.textContent = json["status"];
 };

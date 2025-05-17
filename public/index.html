@@ -56,7 +56,7 @@
             <input type="file" id="file-cnput" accept="application/json" />
             <br /><br />
             <button id="upload-btn">Upload JSON</button>
-            <span id="status" class="hidden" style="color: green;"> </span>
+            <span id="upload-status" class="hidden" style="color: green;"> </span>
         </fieldset>
 
         <fieldset>
@@ -64,11 +64,13 @@
                 <strong>Get status of ongoing process</strong>
                 <button id="info-results-btn" class='info-btn'><i class="fa fa-info"></i></button>
             </legend>
-            <label for="url">URL:</label>
-            <input type="url" id="url" placeholder="https://gym.si.usi.ch:45003/results/XXXX" size=50 required />
+            <label for="uuid">UUID:</label>
+            <input type="text" id="uuid"
+                pattern="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89ABab][0-9a-fA-F]{3}-[0-9a-fA-F]{12}"
+                title="Must be a valid UUID, e.g. 123e4567-e89b-12d3-a456-426614174000" required size=50 />
             <br /><br />
             <button id="request-status">Request status</button>
-            <span id="status" class="hidden" style="color: green;"> </span>
+            <span id="status-status" class="hidden" style="color: green;"> </span>
         </fieldset>
 
 

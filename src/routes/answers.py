@@ -2,7 +2,8 @@
 from flask import Blueprint, request, jsonify, current_app
 from utils.errors import InvalidJsonFormatError
 from utils.process_data import evaluate_comments, evaluate_refinement
-import json
+from utils.observer import request2status
+import json, uuid
 
 router = Blueprint('answers', __name__, url_prefix='/answers')
 
@@ -78,14 +79,22 @@ def submit_refinement():
     except InvalidJsonFormatError as e:
         return jsonify({'error': 'Invalid JSON format', 'message': str(e)}), 400
 
+    process_id = str(uuid.uuid4())
+    request2status[process_id] = "processing"
+
     socketio = current_app.extensions['socketio']
     sid = request.headers.get('X-Socket-Id')
     if sid:
         socketio.emit('successful-upload', room=sid)
-        socketio.emit('started-processing', room=sid)
+        socketio.emit('started-processing', {"id": process_id}, room=sid)
 
     results = evaluate_refinement(
         validated, lambda p: socketio.emit('progress', {'percent': p}, room=sid)
     )
 
     return jsonify(results)
+
+
+@router.route('/status/<id>')
+def request_status(id):
+    return jsonify({"status": request2status.get(id, "doens't exist")})
