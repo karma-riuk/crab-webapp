@@ -38,7 +38,6 @@ class SocketObserver(Observer):
 
 
 class Subject:
-    # TODO: maybe have a process or thread pool here to implement the queue
     def __init__(self, id: str, type_: str, task: Callable) -> None:
         self.id = id
         self.type = type_
