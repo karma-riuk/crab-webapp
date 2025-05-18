@@ -1,5 +1,5 @@
 # routes/answers.py
-from threading import Thread
+from typing import Callable
 from flask import Blueprint, request, jsonify, current_app, url_for
 from utils.errors import InvalidJsonFormatError
 from utils.process_data import evaluate_comments, evaluate_refinement
@@ -47,40 +47,13 @@ def validate_json_format_for_code_refinement(data: str) -> dict[str, dict[str, s
         raise InvalidJsonFormatError()
 
 
-@router.route('/submit/comment', methods=['POST'])
-def submit_comments():
+def handler(type_: str, validate_json: Callable, evaluate_submission: Callable):
     file = request.files.get('file')
     if file is None or file.filename is None or file.filename.split('.')[-1] not in ALLOWED_EXT:
         return jsonify({'error': 'Only JSON files are allowed'}), 400
     data = file.read().decode()
     try:
-        validated = validate_json_format_for_comment_gen(data)
-    except InvalidJsonFormatError as e:
-        return jsonify({'error': 'Invalid JSON format', 'message': str(e)}), 400
-
-    socketio = current_app.extensions['socketio']
-    sid = request.headers.get('X-Socket-Id')
-    if sid:
-        socketio.emit('successful-upload', room=sid)
-        socketio.emit('started-processing', room=sid)
-
-    results = evaluate_comments(
-        validated, lambda p: socketio.emit('progress', {'percent': p}, room=sid)
-    )
-    return jsonify(results)
-
-
-socket2observer = {}
-
-
-@router.route('/submit/refinement', methods=['POST'])
-def submit_refinement():
-    file = request.files.get('file')
-    if file is None or file.filename is None or file.filename.split('.')[-1] not in ALLOWED_EXT:
-        return jsonify({'error': 'Only JSON files are allowed'}), 400
-    data = file.read().decode()
-    try:
-        validated = validate_json_format_for_code_refinement(data)
+        validated = validate_json(data)
     except InvalidJsonFormatError as e:
         return jsonify({'error': 'Invalid JSON format', 'message': str(e)}), 400
 
@@ -89,7 +62,7 @@ def submit_refinement():
     socket_emit = functools.partial(socketio.emit, room=sid)
 
     process_id = str(uuid.uuid4())
-    subject = Subject(process_id, evaluate_refinement)
+    subject = Subject(process_id, type_, evaluate_submission)
     request2status[process_id] = subject
 
     if sid:
@@ -108,6 +81,18 @@ def submit_refinement():
             "help_msg": "Check the status of this process at /answers/status/<id>. Once the evaluation is complete, a call to this URL will return the results.",
         }
     )
+
+
+@router.route('/submit/<any(comment, refinement):task>', methods=['POST'])
+def submit_comments(task):
+    if task == "comment":
+        validator = validate_json_format_for_comment_gen
+        evaluator = evaluate_comments
+    else:
+        validator = validate_json_format_for_code_refinement
+        evaluator = evaluate_refinement
+
+    return handler(task, validator, evaluator)
 
 
 @router.route('/status/<id>')

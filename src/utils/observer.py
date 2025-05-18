@@ -56,7 +56,7 @@ class Subject:
     def notifyComplete(self, results: dict):
         self.status = Status.COMPLETE
         for observer in self.observers:
-            observer.updateComplete(results)
+            observer.updateComplete({"type": self.type, "results": results})
         self.results = results
         # TODO: maybe save results to disk here?
 

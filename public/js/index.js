@@ -66,11 +66,6 @@ function populateRefinementTable(results) {
     });
 }
 
-function handleRefinementAnswer(json) {
-    uploadStatusEl.style.color = "green";
-    uploadStatusEl.textContent = json["id"];
-}
-
 // Upload logic
 document.getElementById("upload-btn").onclick = async () => {
     uploadStatusEl.classList.add("hidden");
@@ -104,8 +99,9 @@ document.getElementById("upload-btn").onclick = async () => {
 
     commentResultsContainer.classList.add("hidden");
     refinementResultsContainer.classList.add("hidden");
-    if (type === "comment") populateCommentTable(json);
-    else handleRefinementAnswer(json);
+
+    uploadStatusEl.style.color = "green";
+    uploadStatusEl.textContent = json["id"];
 };
 
 [...document.getElementsByClassName("download-results")].forEach((e) => {
@@ -136,10 +132,19 @@ socket.on("started-processing", () => {
     setProgress(0);
 });
 
-socket.on("complete", (results) => {
+socket.on("complete", (data) => {
+    commentResultsContainer.classList.add("hidden");
+    refinementResultsContainer.classList.add("hidden");
     progressContainer.classList.add("hidden");
-    refinementResultsContainer.classList.remove("hidden");
-    populateRefinementTable(results);
+    if (data.type == "comment") {
+        commentResultsContainer.classList.remove("hidden");
+        populateCommentTable(data.results);
+    } else if (data.type == "refinement") {
+        refinementResultsContainer.classList.remove("hidden");
+        populateRefinementTable(data.results);
+    } else {
+        console.error(`Unknown type ${data.type}`);
+    }
 });
 
 socket.on("successful-upload", () => {
@@ -167,5 +172,11 @@ document.getElementById("request-status").onclick = async () => {
     statusStatusEl.style.color = "green";
     statusStatusEl.textContent = json["status"];
 
-    if (json.status == "complete") populateRefinementTable(json.results);
+    if (json.status == "complete") {
+        commentResultsContainer.classList.add("hidden");
+        refinementResultsContainer.classList.add("hidden");
+        if (json.type == "comment") populateCommentTable(json.results);
+        else if (json.type == "comment") populateRefinementTable(json.results);
+        else console.error(`Unknown type ${data.type}`);
+    }
 };

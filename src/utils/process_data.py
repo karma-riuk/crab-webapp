@@ -12,7 +12,11 @@ REFERENCE_MAP = Dataset.from_json(
 ARCHIVES_ROOT = str(get_project_path('../data/archives'))
 
 
-def evaluate_comments(answers: dict[str, str], percent_cb):
+def evaluate_comments(
+    answers: dict[str, str],
+    percent_cb: Callable[[float], None] = lambda _: None,
+    complete_cb: Callable[[dict], None] = lambda _: None,
+):
     total = len(answers)
     results = {}
     for i, (id_, gen) in enumerate(answers.items(), 1):
@@ -33,6 +37,8 @@ def evaluate_comments(answers: dict[str, str], percent_cb):
             'proposed_comment': gen,
         }
         percent_cb(int(i / total * 100))
+
+    complete_cb(results)
     return results
 
 
