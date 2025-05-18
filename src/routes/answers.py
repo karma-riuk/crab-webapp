@@ -134,7 +134,6 @@ def status(id):
             socket2observer[sid] = obs
             obs.updatePercentage(subject.percent)
             subject.registerObserver(obs)
-        # if no socket, return current status
         return jsonify({"status": "processing", "percent": subject.percent})
     elif subject.status == Status.CREATED:
         return jsonify({"status": "created"})
