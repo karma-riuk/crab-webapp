@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Callable, Optional, Set, Any
+from threading import Thread
+from typing import Callable, Iterable, Mapping, Optional, Set, Any
 
 
 class Status(Enum):
@@ -61,9 +62,17 @@ class Subject:
 
     def launch_task(self, *args, **kwargs):
         self.status = Status.PROCESSING
-        self.task(
-            *args, **kwargs, percent_cb=self.notifyPercentage, complete_cb=self.notifyComplete
+        t = Thread(
+            target=self.task,
+            args=args,
+            kwargs={
+                **kwargs,
+                "percent_cb": self.notifyPercentage,
+                "complete_cb": self.notifyComplete,
+            },
+            daemon=True,
         )
+        t.start()
 
 
 request2status: dict[str, Subject] = {}

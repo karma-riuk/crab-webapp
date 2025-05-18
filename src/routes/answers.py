@@ -99,8 +99,7 @@ def submit_refinement():
         socket2observer[sid] = obs
         subject.registerObserver(obs)
 
-    t = Thread(target=subject.launch_task, args=(validated,), daemon=True)
-    t.start()
+    subject.launch_task(validated)
     url = url_for(f".status", id=process_id, _external=True)
     return jsonify(
         {
