@@ -113,7 +113,7 @@ def submit_refinement():
 @router.route('/status/<id>')
 def status(id):
     if id not in request2status:
-        raise ValueError(f"Id {id} doesn't exist")
+        return jsonify({"error": "Id doens't exist", "message": f"Id {id} doesn't exist"}), 404
 
     subject = request2status[id]
     if subject.status == Status.COMPLETE:
@@ -126,8 +126,14 @@ def status(id):
         request2status[id] = subject
         if sid:
             if sid in socket2observer:
-                raise AttributeError(
-                    "You are already seeing the real-time progress of that request, please don't spam"
+                return (
+                    jsonify(
+                        {
+                            "error": "Already listening",
+                            "message": f"You are already seeing the real-time progress of that request, please don't spam",
+                        }
+                    ),
+                    400,
                 )
 
             obs = SocketObserver(socket_emit)
