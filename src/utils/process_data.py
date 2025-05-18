@@ -1,6 +1,6 @@
 import sys
 from typing_extensions import Callable
-from utils.handlers import get_build_handler
+from utils.build_handlers import get_build_handler
 from .paths import get_project_path
 from sacrebleu import sentence_bleu as bleu
 from utils.dataset import ArchiveState, Dataset
