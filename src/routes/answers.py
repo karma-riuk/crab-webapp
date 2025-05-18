@@ -68,8 +68,7 @@ def handler(type_: str, validate_json: Callable, evaluate_submission: Callable):
     if sid:
         socket_emit('successful-upload')
         socket_emit('started-processing')
-        obs = SocketObserver(socket_emit)
-        socket2observer[sid] = obs
+        obs = SocketObserver(sid, socket_emit)
         subject.registerObserver(obs)
 
     subject.launch_task(validated)
@@ -102,7 +101,7 @@ def status(id):
 
     subject = request2status[id]
     if subject.status == Status.COMPLETE:
-        return jsonify({"status": "complete", "results": subject.results})
+        return jsonify({"status": "complete", "type": subject.type, "results": subject.results})
     elif subject.status == Status.PROCESSING:
         socketio = current_app.extensions['socketio']
         sid = request.headers.get('X-Socket-Id')
@@ -110,7 +109,7 @@ def status(id):
 
         request2status[id] = subject
         if sid:
-            if sid in socket2observer:
+            if sid in SocketObserver.socket2obs:
                 return (
                     jsonify(
                         {
@@ -121,8 +120,7 @@ def status(id):
                     400,
                 )
 
-            obs = SocketObserver(socket_emit)
-            socket2observer[sid] = obs
+            obs = SocketObserver(sid, socket_emit)
             obs.updatePercentage(subject.percent)
             subject.registerObserver(obs)
         return jsonify({"status": "processing", "percent": subject.percent})

@@ -21,21 +21,27 @@ class Observer(ABC):
 
 
 class SocketObserver(Observer):
-    def __init__(self, socket_emit: Callable[[str, Any], None]) -> None:
+    socket2obs: dict[str, "SocketObserver"] = {}
+
+    def __init__(self, sid: str, socket_emit: Callable[[str, Any], None]) -> None:
         super().__init__()
+        self.sid = sid
         self.socket_emit = socket_emit
+        SocketObserver.socket2obs[self.sid] = self
 
     def updatePercentage(self, percentage: float):
         self.socket_emit("progress", {'percent': percentage})
 
     def updateComplete(self, results: dict):
         self.socket_emit("complete", results)
+        SocketObserver.socket2obs.pop(self.sid)
 
 
 class Subject:
     # TODO: maybe have a process or thread pool here to implement the queue
-    def __init__(self, id: str, task: Callable) -> None:
+    def __init__(self, id: str, type_: str, task: Callable) -> None:
         self.id = id
+        self.type = type_
         self.observers: Set[Observer] = set()
         self.status: Status = Status.CREATED
         self.results: Optional[dict] = None
