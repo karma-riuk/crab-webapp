@@ -580,6 +580,50 @@ def get_coverage_for_file(xml_file: str, target_fully_qualified_class: str, base
     return -1
 
 
+class WaitBuildHander(BuildHandler):
+    def compile_repo(self) -> None:
+        time.sleep(1)
+
+    def test_repo(self) -> None:
+        time.sleep(1)
+
+    def get_type(self) -> str:
+        ...
+
+    def compile_cmd(self) -> str:
+        ...
+
+    def test_cmd(self) -> str:
+        ...
+
+    def extract_test_numbers(self, output: str) -> None:
+        ...
+
+    def clean_cmd(self) -> str:
+        ...
+
+    def inject_changes(self, changes: dict[str, str]):
+        ...
+
+    def generate_coverage_report_cmd(self) -> str:
+        ...
+
+    def get_jacoco_report_paths(self) -> Iterable[str]:
+        ...
+
+    def container_name(self) -> str:
+        ...
+
+    def _try_to_inject_jacoco(self, build_file_path: str) -> None:
+        ...
+
+    def __enter__(self):
+        ...
+
+    def __exit__(self, *args):
+        ...
+
+
 def get_build_handler(root: str, repo: str, verbose: bool = False) -> BuildHandler:
     """
     Get a BuildHandler for a repository, where `repo` .tar.gz/.tgz file in
@@ -589,6 +633,7 @@ def get_build_handler(root: str, repo: str, verbose: bool = False) -> BuildHandl
         an instance of GradleHandler or MavenHandler
     """
     path = os.path.join(root, repo)
+    return WaitBuildHander("NO REPO PATH", "NO BUILD FILE", {})
 
     # 1) If it's a tarball, extract it
     if os.path.isfile(path) and tarfile.is_tarfile(path):
