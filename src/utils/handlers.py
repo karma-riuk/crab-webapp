@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-import os, re, docker, signal, javalang
+import os, re, docker, signal, javalang, time
 from bs4 import BeautifulSoup
-from typing import Iterable, Tuple, Iterator
+from typing import Iterable, Optional, Tuple, Iterator
 import xml.etree.ElementTree as ET
 from javalang.tree import PackageDeclaration
 import tarfile
@@ -16,17 +16,18 @@ GROUP_ID = os.getgid()
 
 
 class BuildHandler(ABC):
+    DOCKER_CLIENT: Optional[docker.DockerClient] = None
+
     def __init__(self, repo_path: str, build_file: str, updates: dict) -> None:
         super().__init__()
         self.path: str = repo_path
         self.build_file: str = build_file
         self.updates = updates
 
-    def set_client(self, client: docker.DockerClient):
-        self.client = client
-
     def __enter__(self):
-        self.container = self.client.containers.run(
+        if BuildHandler.DOCKER_CLIENT is None:
+            BuildHandler.DOCKER_CLIENT = docker.from_env()
+        self.container = BuildHandler.DOCKER_CLIENT.containers.run(
             image=self.container_name(),
             command="tail -f /dev/null",  # to keep the container alive
             volumes={os.path.abspath(self.path): {"bind": "/repo", "mode": "rw"}},

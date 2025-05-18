@@ -1,5 +1,4 @@
-import os
-import sys, docker
+import sys
 from utils.handlers import get_build_handler
 from .paths import get_project_path
 from sacrebleu import sentence_bleu as bleu
@@ -10,8 +9,6 @@ REFERENCE_MAP = Dataset.from_json(
 ).build_reference_map()
 
 ARCHIVES_ROOT = str(get_project_path('../data/archives'))
-
-DOCKER_CLIENT = docker.from_env()
 
 
 def evaluate_comments(answers: dict[str, str], percent_cb):
@@ -57,7 +54,6 @@ def evaluate_refinement(answers: dict[str, dict[str, str]], percent_cb):
             build_handler = get_build_handler(
                 ARCHIVES_ROOT, entry.metadata.archive_name(ArchiveState.MERGED)
             )
-            build_handler.set_client(DOCKER_CLIENT)
             current_progress += 1
             percent_cb(current_progress / total_number_of_steps * 100)
         except Exception as e:
