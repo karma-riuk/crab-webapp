@@ -130,10 +130,6 @@ function setProgress(percent) {
 
 socket.on("progress", (data) => {
     setProgress(data.percent);
-    if (data.percent == 100) {
-        uploadStatusEl.style.color = "green";
-        uploadStatusEl.textContent = "Processing complete!";
-    }
 });
 
 socket.on("started-processing", () => {
