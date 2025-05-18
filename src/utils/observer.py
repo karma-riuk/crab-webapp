@@ -6,6 +6,7 @@ from typing import Callable, Optional, Set, Any
 
 class Status(Enum):
     CREATED = "created"
+    WAITING = "waiting"
     PROCESSING = "processing"
     COMPLETE = "complete"
 
@@ -64,20 +65,6 @@ class Subject:
             observer.updateComplete({"type": self.type, "results": results})
         self.results = results
         # TODO: maybe save results to disk here?
-
-    def launch_task(self, *args, **kwargs):
-        self.status = Status.PROCESSING
-        t = Thread(
-            target=self.task,
-            args=args,
-            kwargs={
-                **kwargs,
-                "percent_cb": self.notifyPercentage,
-                "complete_cb": self.notifyComplete,
-            },
-            daemon=True,
-        )
-        t.start()
 
 
 request2status: dict[str, Subject] = {}

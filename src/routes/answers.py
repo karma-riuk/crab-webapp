@@ -7,6 +7,8 @@ from utils.observer import SocketObserver, Status, Subject, request2status
 import functools
 import json, uuid
 
+from utils.queue_manager import QueueManager
+
 router = Blueprint('answers', __name__, url_prefix='/answers')
 
 ALLOWED_EXT = {'json'}
@@ -47,6 +49,9 @@ def validate_json_format_for_code_refinement(data: str) -> dict[str, dict[str, s
         raise InvalidJsonFormatError()
 
 
+QUEUE_MANAGER = QueueManager(1)
+
+
 def handler(type_: str, validate_json: Callable, evaluate_submission: Callable):
     file = request.files.get('file')
     if file is None or file.filename is None or file.filename.split('.')[-1] not in ALLOWED_EXT:
@@ -71,7 +76,7 @@ def handler(type_: str, validate_json: Callable, evaluate_submission: Callable):
         obs = SocketObserver(sid, socket_emit)
         subject.registerObserver(obs)
 
-    subject.launch_task(validated)
+    QUEUE_MANAGER.submit(subject, validated)
     url = url_for(f".status", id=process_id, _external=True)
     return jsonify(
         {
@@ -124,6 +129,8 @@ def status(id):
             obs.updatePercentage(subject.percent)
             subject.registerObserver(obs)
         return jsonify({"status": "processing", "percent": subject.percent})
+    elif subject.status == Status.WAITING:
+        return jsonify({"status": "waiting", "queue_position": QUEUE_MANAGER.get_position(id)})
     elif subject.status == Status.CREATED:
         return jsonify({"status": "created"})
 
