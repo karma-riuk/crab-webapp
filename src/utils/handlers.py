@@ -156,6 +156,17 @@ class BuildHandler(ABC):
     def clean_repo(self) -> None:
         self.container.exec_run(self.clean_cmd())
 
+    def inject_changes(self, changes: dict[str, str]):
+        for file_path, change in changes.items():
+            full_path = os.path.join(self.path, file_path)
+            print(f"[INFO] Writing change to {full_path}")
+            dirname = os.path.dirname(full_path)
+            if not os.path.exists(dirname):
+                print(f"[INFO] Creating directory {dirname}")
+                os.makedirs(dirname)
+            with open(full_path, "w") as f:
+                f.write(change)
+
     @abstractmethod
     def get_type(self) -> str:
         pass

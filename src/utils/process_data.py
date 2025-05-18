@@ -63,15 +63,7 @@ def evaluate_refinement(answers: dict[str, dict[str, str]], percent_cb):
             )
             continue
 
-        for file_path, change in changes.items():
-            full_path = os.path.join(build_handler.path, file_path)
-            print("[INFO] Writing change to file:", full_path)
-            dirname = os.path.dirname(full_path)
-            if not os.path.exists(dirname):
-                print("[INFO] Creating directory:", dirname)
-                os.makedirs(dirname)
-            with open(full_path, "w") as f:
-                f.write(change)
+        build_handler.inject_changes(changes)
         current_progress += 1
         percent_cb(current_progress / total_number_of_steps * 100)
 
