@@ -30,6 +30,11 @@ fieldset {
     padding: 1em;
 }
 
+fieldset input[type="text"] {
+    flex-grow: 1;
+    max-width: 36ch;
+}
+
 button {
     padding: 0.5em 1em;
     cursor: pointer;
