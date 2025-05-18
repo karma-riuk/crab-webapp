@@ -100,8 +100,12 @@ document.getElementById("upload-btn").onclick = async () => {
     commentResultsContainer.classList.add("hidden");
     refinementResultsContainer.classList.add("hidden");
 
+    uploadStatusEl.classList.remove("hidden");
     uploadStatusEl.style.color = "green";
     uploadStatusEl.textContent = json["id"];
+
+    uuid.value = json["id"];
+    document.getElementById("request-status").click();
 };
 
 [...document.getElementsByClassName("download-results")].forEach((e) => {
@@ -178,5 +182,7 @@ document.getElementById("request-status").onclick = async () => {
         if (json.type == "comment") populateCommentTable(json.results);
         else if (json.type == "comment") populateRefinementTable(json.results);
         else console.error(`Unknown type ${data.type}`);
+    } else if (json.status == "waiting") {
+        statusStatusEl.textContent = `Currently waiting, position in queue ${json.queue_position}`;
     }
 };

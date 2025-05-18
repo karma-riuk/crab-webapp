@@ -62,19 +62,9 @@ def handler(type_: str, validate_json: Callable, evaluate_submission: Callable):
     except InvalidJsonFormatError as e:
         return jsonify({'error': 'Invalid JSON format', 'message': str(e)}), 400
 
-    socketio = current_app.extensions['socketio']
-    sid = request.headers.get('X-Socket-Id')
-    socket_emit = functools.partial(socketio.emit, room=sid)
-
     process_id = str(uuid.uuid4())
     subject = Subject(process_id, type_, evaluate_submission)
     request2status[process_id] = subject
-
-    if sid:
-        socket_emit('successful-upload')
-        socket_emit('started-processing')
-        obs = SocketObserver(sid, socket_emit)
-        subject.registerObserver(obs)
 
     QUEUE_MANAGER.submit(subject, validated)
     url = url_for(f".status", id=process_id, _external=True)
