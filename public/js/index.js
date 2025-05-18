@@ -27,6 +27,50 @@ document.getElementById("download-dataset").onclick = () => {
     window.location = url;
 };
 
+function populateCommentTable(results) {
+    commentResultsContainer.classList.remove("hidden");
+
+    const tbody = commentResultsContainer.querySelector("table tbody");
+    tbody.innerHTML = "";
+
+    Object.entries(results).forEach(([id, info]) => {
+        const row = tbody.insertRow(); // create a new row
+        const idCell = row.insertCell(); // cell 1: id
+        const commentCell = row.insertCell();
+        const scoreCell = row.insertCell();
+        const span = document.createElement("span");
+
+        idCell.textContent = id;
+        span.className = "comment-cell";
+        span.textContent = info["proposed_comment"];
+        commentCell.appendChild(span);
+        scoreCell.textContent = info["max_bleu_score"].toFixed(2);
+    });
+}
+
+function populateRefinementTable(results) {
+    refinementResultsContainer.classList.remove("hidden");
+
+    const tbody = refinementResultsContainer.querySelector("table tbody");
+    tbody.innerHTML = "";
+
+    Object.entries(results).forEach(([id, info]) => {
+        const row = tbody.insertRow(); // create a new row
+        const idCell = row.insertCell(); // cell 1: id
+        const compiledCell = row.insertCell();
+        const testedCell = row.insertCell();
+
+        idCell.textContent = id;
+        compiledCell.textContent = info["compilation"] || false ? tick : cross;
+        testedCell.textContent = info["test"] || false ? tick : cross;
+    });
+}
+
+function handleRefinementAnswer(json) {
+    uploadStatusEl.style.color = "green";
+    uploadStatusEl.textContent = json["id"];
+}
+
 // Upload logic
 document.getElementById("upload-btn").onclick = async () => {
     uploadStatusEl.classList.add("hidden");
@@ -58,44 +102,10 @@ document.getElementById("upload-btn").onclick = async () => {
         return;
     }
 
-    results = json;
-    progressContainer.classList.add("hidden");
-
     commentResultsContainer.classList.add("hidden");
     refinementResultsContainer.classList.add("hidden");
-    const resultsContainer =
-        type === "comment"
-            ? commentResultsContainer
-            : refinementResultsContainer;
-
-    resultsContainer.classList.remove("hidden");
-
-    const tbody = resultsContainer.querySelector("table tbody");
-    tbody.innerHTML = "";
-
-    Object.entries(results).forEach(([id, info]) => {
-        const row = tbody.insertRow(); // create a new row
-        const idCell = row.insertCell(); // cell 1: id
-        idCell.textContent = id;
-
-        if (type == "comment") {
-            const commentCell = row.insertCell();
-            const scoreCell = row.insertCell();
-
-            const span = document.createElement("span");
-            span.className = "comment-cell";
-            span.textContent = info["proposed_comment"];
-            commentCell.appendChild(span);
-            scoreCell.textContent = info["max_bleu_score"].toFixed(2);
-        } else {
-            const compiledCell = row.insertCell();
-            const testedCell = row.insertCell();
-
-            compiledCell.textContent =
-                info["compilation"] || false ? tick : cross;
-            testedCell.textContent = info["test"] || false ? tick : cross;
-        }
-    });
+    if (type === "comment") populateCommentTable(json);
+    else handleRefinementAnswer(json);
 };
 
 [...document.getElementsByClassName("download-results")].forEach((e) => {
@@ -126,11 +136,14 @@ socket.on("progress", (data) => {
     }
 });
 
-socket.on("started-processing", (data) => {
+socket.on("started-processing", () => {
     setProgress(0);
-    uploadStatusEl.classList.remove("hidden");
-    uploadStatusEl.style.color = "green";
-    uploadStatusEl.textContent = data["id"];
+});
+
+socket.on("complete", (results) => {
+    progressContainer.classList.add("hidden");
+    refinementResultsContainer.classList.remove("hidden");
+    populateRefinementTable(results);
 });
 
 socket.on("successful-upload", () => {
@@ -194,11 +207,12 @@ document.getElementById("request-status").onclick = async () => {
     if (!res.ok) {
         statusStatusEl.classList.remove("hidden");
         statusStatusEl.style.color = "red";
-        statusStatusEl.textContent =
-            json.error + (json.message ? ": " + json.message : "");
+        statusStatusEl.textContent = json.message ? json.message : json.error;
         return;
     }
     statusStatusEl.classList.remove("hidden");
     statusStatusEl.style.color = "green";
     statusStatusEl.textContent = json["status"];
+
+    if (json.status == "complete") populateRefinementTable(json.results);
 };

@@ -1,8 +1,10 @@
 # routes/answers.py
-from flask import Blueprint, request, jsonify, current_app
+from threading import Thread
+from flask import Blueprint, request, jsonify, current_app, url_for
 from utils.errors import InvalidJsonFormatError
 from utils.process_data import evaluate_comments, evaluate_refinement
-from utils.observer import request2status
+from utils.observer import SocketObserver, Status, Subject, request2status
+import functools
 import json, uuid
 
 router = Blueprint('answers', __name__, url_prefix='/answers')
@@ -68,6 +70,9 @@ def submit_comments():
     return jsonify(results)
 
 
+socket2observer = {}
+
+
 @router.route('/submit/refinement', methods=['POST'])
 def submit_refinement():
     file = request.files.get('file')
@@ -79,22 +84,60 @@ def submit_refinement():
     except InvalidJsonFormatError as e:
         return jsonify({'error': 'Invalid JSON format', 'message': str(e)}), 400
 
-    process_id = str(uuid.uuid4())
-    request2status[process_id] = "processing"
-
     socketio = current_app.extensions['socketio']
     sid = request.headers.get('X-Socket-Id')
+    socket_emit = functools.partial(socketio.emit, room=sid)
+
+    process_id = str(uuid.uuid4())
+    subject = Subject(process_id, evaluate_refinement)
+    request2status[process_id] = subject
+
     if sid:
-        socketio.emit('successful-upload', room=sid)
-        socketio.emit('started-processing', {"id": process_id}, room=sid)
+        socket_emit('successful-upload')
+        socket_emit('started-processing')
+        obs = SocketObserver(socket_emit)
+        socket2observer[sid] = obs
+        subject.registerObserver(obs)
 
-    results = evaluate_refinement(
-        validated, lambda p: socketio.emit('progress', {'percent': p}, room=sid)
+    t = Thread(target=subject.launch_task, args=(validated,), daemon=True)
+    t.start()
+    url = url_for(f".status", id=process_id, _external=True)
+    return jsonify(
+        {
+            "id": process_id,
+            "status_url": url,
+            "help_msg": "Check the status of this process at /answers/status/<id>. Once the evaluation is complete, a call to this URL will return the results.",
+        }
     )
-
-    return jsonify(results)
 
 
 @router.route('/status/<id>')
-def request_status(id):
-    return jsonify({"status": request2status.get(id, "doens't exist")})
+def status(id):
+    if id not in request2status:
+        raise ValueError(f"Id {id} doesn't exist")
+
+    subject = request2status[id]
+    if subject.status == Status.COMPLETE:
+        return jsonify({"status": "complete", "results": subject.results})
+    elif subject.status == Status.PROCESSING:
+        socketio = current_app.extensions['socketio']
+        sid = request.headers.get('X-Socket-Id')
+        socket_emit = functools.partial(socketio.emit, room=sid)
+
+        request2status[id] = subject
+        if sid:
+            if sid in socket2observer:
+                raise AttributeError(
+                    "You are already seeing the real-time progress of that request, please don't spam"
+                )
+
+            obs = SocketObserver(socket_emit)
+            socket2observer[sid] = obs
+            obs.updatePercentage(subject.percent)
+            subject.registerObserver(obs)
+        # if no socket, return current status
+        return jsonify({"status": "processing", "percent": subject.percent})
+    elif subject.status == Status.CREATED:
+        return jsonify({"status": "created"})
+
+    raise Exception("This code should be unreachable")

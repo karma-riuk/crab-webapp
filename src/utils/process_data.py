@@ -1,4 +1,5 @@
 import sys
+from typing_extensions import Callable
 from utils.handlers import get_build_handler
 from .paths import get_project_path
 from sacrebleu import sentence_bleu as bleu
@@ -35,7 +36,11 @@ def evaluate_comments(answers: dict[str, str], percent_cb):
     return results
 
 
-def evaluate_refinement(answers: dict[str, dict[str, str]], percent_cb):
+def evaluate_refinement(
+    answers: dict[str, dict[str, str]],
+    percent_cb: Callable[[float], None] = lambda _: None,
+    complete_cb: Callable[[dict], None] = lambda _: None,
+):
     n_answers = len(answers)
     n_steps = 4   # creating build handler + injecting the files in the repo + compilation + testing
     total_number_of_steps = n_answers * n_steps
@@ -92,4 +97,5 @@ def evaluate_refinement(answers: dict[str, dict[str, str]], percent_cb):
 
         print(f"[INFO] Done with {id}...")
 
+    complete_cb(results)
     return results
