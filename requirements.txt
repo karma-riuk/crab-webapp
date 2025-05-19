@@ -5,3 +5,4 @@ docker
 javalang
 bs4
 sacrebleu
+python-dotenv

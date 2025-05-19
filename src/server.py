@@ -8,6 +8,10 @@ from routes.datasets import router as datasets_router
 from werkzeug.exceptions import HTTPException
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 app = Flask(__name__, static_folder='../public', static_url_path='/')
 CORS(app)
 
