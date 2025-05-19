@@ -186,3 +186,8 @@ document.getElementById("request-status").onclick = async () => {
         statusStatusEl.textContent = `Currently waiting, position in queue ${json.queue_position}`;
     }
 };
+
+if (window.location.hash) {
+    uuid.value = window.location.hash.substring(1); // remove # from hash
+    document.getElementById("request-status").click();
+}
