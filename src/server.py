@@ -1,9 +1,10 @@
 # server.py
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 from flask_socketio import SocketIO
+from utils.observer import Status, uuid2subject
 from routes.index import router as index_router
-from routes.answers import router as answers_router
+from routes.answers import QUEUE_MANAGER, router as answers_router
 from routes.datasets import router as datasets_router
 from werkzeug.exceptions import HTTPException
 import os
@@ -41,8 +42,21 @@ def init_socketio(app):
     socketio = SocketIO(app, cors_allowed_origins='*')
 
     @socketio.on('connect')
-    def _():
+    def on_connect():
         print('Websocket client connected')
+
+    @socketio.on('get_queue_position')
+    def on_get_queue_position(data):
+        sid = request.sid
+        subject_id = data["uuid"]
+        subject = uuid2subject[subject_id]
+        if subject.status == Status.WAITING:
+            return socketio.emit(
+                'queue_position',
+                {"status": "waiting", "position": QUEUE_MANAGER.get_position(subject_id)},
+                to=sid,
+            )
+        return socketio.emit('queue_position', {"status": subject.status.value}, to=sid)
 
     return socketio
 

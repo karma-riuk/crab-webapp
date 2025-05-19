@@ -3,7 +3,7 @@ from typing import Callable
 from flask import Blueprint, request, jsonify, current_app, url_for
 from utils.errors import InvalidJsonFormatError
 from utils.process_data import evaluate_comments, evaluate_refinement
-from utils.observer import SocketObserver, Status, Subject, request2status
+from utils.observer import SocketObserver, Status, Subject, uuid2subject
 import functools
 import json, uuid
 
@@ -64,7 +64,7 @@ def handler(type_: str, validate_json: Callable, evaluate_submission: Callable):
 
     process_id = str(uuid.uuid4())
     subject = Subject(process_id, type_, evaluate_submission)
-    request2status[process_id] = subject
+    uuid2subject[process_id] = subject
 
     QUEUE_MANAGER.submit(subject, validated)
     url = url_for(f".status", id=process_id, _external=True)
@@ -91,37 +91,49 @@ def submit_comments(task):
 
 @router.route('/status/<id>')
 def status(id):
-    if id not in request2status:
+    if id not in uuid2subject:
         return jsonify({"error": "Id doens't exist", "message": f"Id {id} doesn't exist"}), 404
 
-    subject = request2status[id]
+    subject = uuid2subject[id]
     if subject.status == Status.COMPLETE:
         return jsonify({"status": "complete", "type": subject.type, "results": subject.results})
-    elif subject.status == Status.PROCESSING:
-        socketio = current_app.extensions['socketio']
-        sid = request.headers.get('X-Socket-Id')
-        socket_emit = functools.partial(socketio.emit, room=sid)
 
-        request2status[id] = subject
+    socketio = current_app.extensions['socketio']
+    sid = request.headers.get('X-Socket-Id')
+    socket_emit = functools.partial(socketio.emit, to=sid)
+
+    if sid and sid in SocketObserver.socket2obs:
+        obs = SocketObserver.socket2obs[sid]
+        subject_watched_by_socket = Subject.obs2subject[obs]
+        if subject == subject_watched_by_socket:
+            return (
+                jsonify(
+                    {
+                        "error": "Already listening",
+                        "message": f"You are already seeing the real-time progress of that request, please don't spam",
+                    }
+                ),
+                400,
+            )
+
+        subject_watched_by_socket.unregisterObserver(obs)
+        SocketObserver.socket2obs.pop(sid)
+        socket_emit("changing-subject")
+
+    if subject.status == Status.PROCESSING:
         if sid:
-            if sid in SocketObserver.socket2obs:
-                return (
-                    jsonify(
-                        {
-                            "error": "Already listening",
-                            "message": f"You are already seeing the real-time progress of that request, please don't spam",
-                        }
-                    ),
-                    400,
-                )
-
             obs = SocketObserver(sid, socket_emit)
             obs.updatePercentage(subject.percent)
             subject.registerObserver(obs)
         return jsonify({"status": "processing", "percent": subject.percent})
-    elif subject.status == Status.WAITING:
+
+    if subject.status == Status.WAITING:
+        if sid:
+            obs = SocketObserver(sid, socket_emit)
+            subject.registerObserver(obs)
         return jsonify({"status": "waiting", "queue_position": QUEUE_MANAGER.get_position(id)})
-    elif subject.status == Status.CREATED:
+
+    if subject.status == Status.CREATED:
         return jsonify({"status": "created"})
 
     raise Exception("This code should be unreachable")

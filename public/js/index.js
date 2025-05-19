@@ -134,6 +134,17 @@ socket.on("progress", (data) => {
 
 socket.on("started-processing", () => {
     setProgress(0);
+    if (queue_position_interval != null) {
+        clearTimeout(queue_position_interval);
+        queue_position_interval = null;
+    }
+});
+
+socket.on("changed-subject", () => {
+    console.log("changed-subject");
+    commentResultsContainer.classList.add("hidden");
+    refinementResultsContainer.classList.add("hidden");
+    progressContainer.classList.add("hidden");
 });
 
 socket.on("complete", (data) => {
@@ -156,6 +167,22 @@ socket.on("successful-upload", () => {
     uploadStatusEl.style.color = "green";
     uploadStatusEl.textContent = "Upload succeeded!";
 });
+
+socket.on("queue_position", (data) => {
+    console.log(`got answer for queue position with ${data}`);
+    if (data.status == "waiting")
+        statusStatusEl.textContent = `Currently waiting, position in queue ${data.position}`;
+    else {
+        if (queue_position_interval != null) {
+            console.log("clearing interval");
+            clearTimeout(queue_position_interval);
+            queue_position_interval = null;
+        }
+        statusStatusEl.textContent = data.status;
+    }
+});
+
+let queue_position_interval = null;
 
 document.getElementById("request-status").onclick = async () => {
     if (!uuid.reportValidity()) return;
@@ -184,6 +211,10 @@ document.getElementById("request-status").onclick = async () => {
         else console.error(`Unknown type ${data.type}`);
     } else if (json.status == "waiting") {
         statusStatusEl.textContent = `Currently waiting, position in queue ${json.queue_position}`;
+        queue_position_interval = setInterval(() => {
+            socket.emit("get_queue_position", { uuid: uuid.value });
+            console.log("asking for queue posittin");
+        }, 3000);
     }
 };
 

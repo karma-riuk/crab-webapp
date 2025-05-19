@@ -36,7 +36,7 @@ class QueueManager:
             self.wait_queue.remove(subject.id)
         except ValueError:
             pass
-        subject.status = Status.PROCESSING
+        subject.notifyStarted()
         # Execute the user-defined task synchronously in this worker thread
         subject.task(
             *args,
