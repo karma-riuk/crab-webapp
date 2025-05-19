@@ -34,8 +34,8 @@ function populateCommentTable(results) {
     tbody.innerHTML = "";
 
     Object.entries(results).forEach(([id, info]) => {
-        const row = tbody.insertRow(); // create a new row
-        const idCell = row.insertCell(); // cell 1: id
+        const row = tbody.insertRow();
+        const idCell = row.insertCell();
         const commentCell = row.insertCell();
         const scoreCell = row.insertCell();
         const span = document.createElement("span");
@@ -55,8 +55,8 @@ function populateRefinementTable(results) {
     tbody.innerHTML = "";
 
     Object.entries(results).forEach(([id, info]) => {
-        const row = tbody.insertRow(); // create a new row
-        const idCell = row.insertCell(); // cell 1: id
+        const row = tbody.insertRow();
+        const idCell = row.insertCell();
         const compiledCell = row.insertCell();
         const testedCell = row.insertCell();
 
