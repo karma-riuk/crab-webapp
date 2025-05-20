@@ -1,10 +1,8 @@
 from abc import ABC, abstractmethod
+from datetime import datetime, timedelta
 from enum import Enum
-import os
-import tempfile
+import os, tempfile, threading, json
 from typing import Callable, Optional, Set
-
-from flask import json
 
 RESULTS_DIR = os.getenv("RESULTS_DIR", "submission_results")
 
@@ -69,9 +67,22 @@ class Subject:
 
             _, type_, _ = file.split("_")
             with open(file_path, "r") as f:
-                cls.id2subject[file] = Subject(
+                subject = Subject(
                     type_, lambda: None, id=file, status=Status.COMPLETE, results=json.load(f)
                 )
+                cls.id2subject[file] = subject
+                # calculate one week from the file's creation time
+                creation_time = os.path.getctime(file_path)
+                created_dt = datetime.fromtimestamp(creation_time)
+                one_week_later = created_dt + timedelta(weeks=1)
+                if one_week_later < datetime.now():
+                    # file is older than one week, remove it
+                    os.remove(file_path)
+                else:
+                    timer = threading.Timer(
+                        (one_week_later - datetime.now()).total_seconds(), subject._rm_results_file
+                    )
+                    timer.start()
 
     def __init__(
         self,
@@ -123,6 +134,14 @@ class Subject:
         self.results = results
         with open(self.full_path, "w") as f:
             json.dump(results, f)
+        delay_seconds = timedelta(weeks=1).total_seconds()
+
+        timer = threading.Timer(delay_seconds, self._rm_results_file)
+        timer.start()
+
+    def _rm_results_file(self):
+        if os.path.exists(self.full_path):
+            os.remove(self.full_path)
 
 
 Subject.setup()
