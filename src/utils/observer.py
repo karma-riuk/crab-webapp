@@ -52,7 +52,7 @@ class SocketObserver(Observer):
 
 class Subject:
     obs2subject: dict[Observer, "Subject"] = {}
-    uuid2subject: dict[str, "Subject"] = {}
+    id2subject: dict[str, "Subject"] = {}
 
     @classmethod
     def setup(cls):
@@ -69,7 +69,7 @@ class Subject:
 
             _, type_, _ = file.split("_")
             with open(file_path, "r") as f:
-                cls.uuid2subject[file] = Subject(
+                cls.id2subject[file] = Subject(
                     type_, lambda: None, id=file, status=Status.COMPLETE, results=json.load(f)
                 )
 

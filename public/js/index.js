@@ -185,7 +185,7 @@ socket.on("queue_position", (data) => {
 let queue_position_interval = null;
 
 document.getElementById("request-status").onclick = async () => {
-    if (!uuid.reportValidity()) return;
+    if (!id.reportValidity()) return;
     const res = await fetch(`/answers/status/${uuid.value}`, {
         headers: {
             "X-Socket-Id": socket.id,
@@ -212,7 +212,7 @@ document.getElementById("request-status").onclick = async () => {
     } else if (json.status == "waiting") {
         statusStatusEl.textContent = `Currently waiting, position in queue ${json.queue_position}`;
         queue_position_interval = setInterval(() => {
-            socket.emit("get_queue_position", { uuid: uuid.value });
+            socket.emit("get_queue_position", { id: uuid.value });
         }, 3000);
     }
 };

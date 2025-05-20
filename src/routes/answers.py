@@ -64,7 +64,7 @@ def handler(type_: str, validate_json: Callable, evaluate_submission: Callable):
 
     subject = Subject(type_, evaluate_submission)
     process_id = subject.id
-    Subject.uuid2subject[process_id] = subject
+    Subject.id2subject[process_id] = subject
 
     QUEUE_MANAGER.submit(subject, validated)
     url = url_for(f".status", id=process_id, _external=True)
@@ -91,10 +91,10 @@ def submit_comments(task):
 
 @router.route('/status/<id>')
 def status(id):
-    if id not in Subject.uuid2subject:
+    if id not in Subject.id2subject:
         return jsonify({"error": "Id doens't exist", "message": f"Id {id} doesn't exist"}), 404
 
-    subject = Subject.uuid2subject[id]
+    subject = Subject.id2subject[id]
     if subject.status == Status.COMPLETE:
         return jsonify({"status": "complete", "type": subject.type, "results": subject.results})
 
