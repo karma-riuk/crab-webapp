@@ -96,7 +96,11 @@ def status(id):
 
     subject = Subject.id2subject[id]
     if subject.status == Status.COMPLETE:
-        return jsonify({"status": "complete", "type": subject.type, "results": subject.results})
+        only_results = request.args.get('onlyResults', 'false').lower() == 'true'
+        if only_results:
+            return jsonify(subject.results)
+        else:
+            return jsonify({"status": "complete", "type": subject.type, "results": subject.results})
 
     socketio = current_app.extensions['socketio']
     sid = request.headers.get('X-Socket-Id')
