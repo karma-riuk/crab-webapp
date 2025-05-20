@@ -53,14 +53,14 @@ def evaluate_refinement(
     current_progress = 0
     results = {}
     for i, (id, changes) in enumerate(answers.items()):
-        print(f"[INFO] Processing {id} ({i}/{n_answers}: {i/n_answers:.2%})...")
+        # print(f"[INFO] Processing {id} ({i}/{n_answers}: {i/n_answers:.2%})...")
         current_progress = i * n_steps
         percent_cb(current_progress / total_number_of_steps * 100)
         if id not in REFERENCE_MAP:
             print(f"[WARNING] skipping {id} since it is not present in dataset", file=sys.stderr)
             continue
         entry = REFERENCE_MAP[id]
-        print(f"[INFO] {id} info: {entry.metadata.repo} #PR {entry.metadata.pr_number}")
+        # print(f"[INFO] {id} info: {entry.metadata.repo} #PR {entry.metadata.pr_number}")
         try:
             build_handler = get_build_handler(
                 ARCHIVES_ROOT, entry.metadata.archive_name(ArchiveState.MERGED)
@@ -86,9 +86,9 @@ def evaluate_refinement(
             ]
             for task, action in steps:
                 try:
-                    print(f"[INFO] Executing {task}...")
+                    # print(f"[INFO] Executing {task}...")
                     action()
-                    print(f"[INFO] {task} executed successfully on {id}")
+                    # print(f"[INFO] {task} executed successfully on {id}")
                     results[id][task] = True
                     current_progress += 1
                     percent_cb(current_progress / total_number_of_steps * 100)
@@ -101,7 +101,7 @@ def evaluate_refinement(
                     )
                     break
 
-        print(f"[INFO] Done with {id}...")
+        # print(f"[INFO] Done with {id}...")
 
     complete_cb(results)
     return results
