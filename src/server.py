@@ -2,7 +2,7 @@
 from flask import Flask, request
 from flask_cors import CORS
 from flask_socketio import SocketIO
-from utils.observer import Status, Subject
+from utils.observer import Status, Subject, SocketObserver
 from routes.index import router as index_router
 from routes.answers import QUEUE_MANAGER, router as answers_router
 from routes.datasets import router as datasets_router
@@ -48,6 +48,16 @@ def init_socketio(app):
     @socketio.on('connect')
     def on_connect():
         print('Websocket client connected')
+
+    @socketio.on('disconnect')
+    def on_disconnect():
+        print('Websocket client disconnected')
+        sid = request.sid   # type: ignore
+        if sid in SocketObserver.socket2obs:
+            obs = SocketObserver.socket2obs.pop(sid)
+            if obs in Subject.obs2subject:
+                subject = Subject.obs2subject.pop(obs)
+                subject.unregisterObserver(obs)
 
     @socketio.on('get_queue_position')
     def on_get_queue_position(data):
