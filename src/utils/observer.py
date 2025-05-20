@@ -82,6 +82,7 @@ class Subject:
                     timer = threading.Timer(
                         (one_week_later - datetime.now()).total_seconds(), subject._rm_results_file
                     )
+                    timer.daemon = True
                     timer.start()
 
     def __init__(
@@ -137,6 +138,7 @@ class Subject:
         delay_seconds = timedelta(weeks=1).total_seconds()
 
         timer = threading.Timer(delay_seconds, self._rm_results_file)
+        timer.daemon = True
         timer.start()
 
     def _rm_results_file(self):
