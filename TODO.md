@@ -28,6 +28,8 @@ Batch 1 then move on to some other features (frontend, maybe auth).
 
 ## [x] As a user I want to see what the webpage is used for (inspired from https://seart-ghs.si.usi.ch)
 
+## [ ] Remove the paths utils, it's useless in python since every path is relative to where you call the script from
+
 # DATASET
 
 ## [x] Rebuild the dataset (is doing)
