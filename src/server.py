@@ -47,7 +47,7 @@ def init_socketio(app):
 
     @socketio.on('get_queue_position')
     def on_get_queue_position(data):
-        sid = request.sid
+        sid = request.sid   # type: ignore
         subject_id = data["uuid"]
         subject = uuid2subject[subject_id]
         if subject.status == Status.WAITING:
