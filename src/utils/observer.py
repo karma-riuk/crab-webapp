@@ -144,6 +144,3 @@ class Subject:
     def _rm_results_file(self):
         if os.path.exists(self.full_path):
             os.remove(self.full_path)
-
-
-Subject.setup()
