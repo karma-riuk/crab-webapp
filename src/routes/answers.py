@@ -5,7 +5,7 @@ from utils.errors import InvalidJsonFormatError
 from utils.process_data import evaluate_comments, evaluate_refinement
 from utils.observer import SocketObserver, Status, Subject
 import functools
-import json, uuid
+import json
 
 from utils.queue_manager import QueueManager
 
@@ -62,8 +62,8 @@ def handler(type_: str, validate_json: Callable, evaluate_submission: Callable):
     except InvalidJsonFormatError as e:
         return jsonify({'error': 'Invalid JSON format', 'message': str(e)}), 400
 
-    process_id = str(uuid.uuid4())
-    subject = Subject(process_id, type_, evaluate_submission)
+    subject = Subject(type_, evaluate_submission)
+    process_id = subject.id
     Subject.uuid2subject[process_id] = subject
 
     QUEUE_MANAGER.submit(subject, validated)

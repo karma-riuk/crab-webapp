@@ -1,7 +1,12 @@
 from abc import ABC, abstractmethod
 from enum import Enum
-from threading import Thread
-from typing import Callable, Optional, Set, Any
+import os
+import tempfile
+from typing import Callable, Optional, Set
+
+from flask import json
+
+RESULTS_DIR = os.getenv("RESULTS_DIR", "submission_results")
 
 
 class Status(Enum):
@@ -49,14 +54,47 @@ class Subject:
     obs2subject: dict[Observer, "Subject"] = {}
     uuid2subject: dict[str, "Subject"] = {}
 
-    def __init__(self, id: str, type_: str, task: Callable) -> None:
-        self.id = id
+    @classmethod
+    def setup(cls):
+        if not os.path.exists(RESULTS_DIR):
+            os.mkdir(RESULTS_DIR)
+
+        for file in os.listdir(RESULTS_DIR):
+            file_path = os.path.join(RESULTS_DIR, file)
+            if os.path.getsize(file_path) == 0:
+                # submission was still being processed before the server stopped
+                # the file was created but never written to, therefore must be removed
+                os.remove(file_path)
+                continue
+
+            _, type_, _ = file.split("_")
+            with open(file_path, "r") as f:
+                cls.uuid2subject[file] = Subject(
+                    type_, lambda: None, id=file, status=Status.COMPLETE, results=json.load(f)
+                )
+
+    def __init__(
+        self,
+        type_: str,
+        task: Callable,
+        id: Optional[str] = None,
+        status: Status = Status.CREATED,
+        results: Optional[dict] = None,
+    ) -> None:
         self.type = type_
         self.observers: Set[Observer] = set()
-        self.status: Status = Status.CREATED
-        self.results: Optional[dict] = None
+        self.status: Status = status
+        self.results: Optional[dict] = results
         self.task = task
         self.percent: float = -1
+        if id is None:
+            _, self.full_path = tempfile.mkstemp(
+                prefix=f"crab_{type_}_", dir=RESULTS_DIR, text=True
+            )
+            self.id = os.path.basename(self.full_path)
+        else:
+            self.full_path = os.path.abspath(os.path.join(RESULTS_DIR, id))
+            self.id = id
 
     def registerObserver(self, observer: Observer) -> None:
         self.observers.add(observer)
@@ -83,4 +121,8 @@ class Subject:
             Subject.obs2subject.pop(observer)
         self.observers.clear()
         self.results = results
-        # TODO: maybe save results to disk here?
+        with open(self.full_path, "w") as f:
+            json.dump(results, f)
+
+
+Subject.setup()
