@@ -218,6 +218,12 @@ document.getElementById("request-status").onclick = async () => {
     }
 };
 
+uuid.addEventListener("keyup", (e) => {
+    if (e.key === "Enter") {
+        document.getElementById("request-status").click();
+    }
+});
+
 if (window.location.hash) {
     uuid.value = window.location.hash.substring(1); // remove # from hash
     document.getElementById("request-status").click();
