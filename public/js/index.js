@@ -110,21 +110,15 @@ document.getElementById("upload-btn").onclick = async () => {
 
 [...document.getElementsByClassName("download-results")].forEach((e) => {
     e.onclick = () => {
-        // 1. Convert object to JSON string
-        const json = JSON.stringify(results, null, 2);
-        // 2. Create a Blob of type application/json
-        const blob = new Blob([json], { type: "application/json" });
-        // 3. Generate a temporary object URL
-        const url = URL.createObjectURL(blob);
-        // 4. Create a temporary <a> element and trigger download
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "results.json";
-        // document.body.appendChild(link);
-        link.click();
-        // 5. Cleanup: revoke the object URL and remove the link
-        URL.revokeObjectURL(url);
-        // document.body.removeChild(link);
+        const dataStr =
+            "data:text/json;charset=utf-8," +
+            encodeURIComponent(JSON.stringify(results));
+        const dlAnchorElem = document.createElement("a");
+        dlAnchorElem.setAttribute("href", dataStr);
+        dlAnchorElem.setAttribute("download", "results.json");
+        document.body.appendChild(dlAnchorElem); // required for firefox
+        dlAnchorElem.click();
+        dlAnchorElem.remove();
     };
 });
 
