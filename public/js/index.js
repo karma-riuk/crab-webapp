@@ -213,7 +213,6 @@ document.getElementById("request-status").onclick = async () => {
         statusStatusEl.textContent = `Currently waiting, position in queue ${json.queue_position}`;
         queue_position_interval = setInterval(() => {
             socket.emit("get_queue_position", { uuid: uuid.value });
-            console.log("asking for queue posittin");
         }, 3000);
     }
 };
