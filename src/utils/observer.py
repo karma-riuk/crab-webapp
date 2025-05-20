@@ -47,6 +47,7 @@ class SocketObserver(Observer):
 
 class Subject:
     obs2subject: dict[Observer, "Subject"] = {}
+    uuid2subject: dict[str, "Subject"] = {}
 
     def __init__(self, id: str, type_: str, task: Callable) -> None:
         self.id = id
@@ -83,6 +84,3 @@ class Subject:
         self.observers.clear()
         self.results = results
         # TODO: maybe save results to disk here?
-
-
-uuid2subject: dict[str, Subject] = {}

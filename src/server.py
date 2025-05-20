@@ -2,7 +2,7 @@
 from flask import Flask, request
 from flask_cors import CORS
 from flask_socketio import SocketIO
-from utils.observer import Status, uuid2subject
+from utils.observer import Status, Subject
 from routes.index import router as index_router
 from routes.answers import QUEUE_MANAGER, router as answers_router
 from routes.datasets import router as datasets_router
@@ -49,7 +49,7 @@ def init_socketio(app):
     def on_get_queue_position(data):
         sid = request.sid   # type: ignore
         subject_id = data["uuid"]
-        subject = uuid2subject[subject_id]
+        subject = Subject.uuid2subject[subject_id]
         if subject.status == Status.WAITING:
             return socketio.emit(
                 'queue_position',

@@ -3,7 +3,7 @@ from typing import Callable
 from flask import Blueprint, request, jsonify, current_app, url_for
 from utils.errors import InvalidJsonFormatError
 from utils.process_data import evaluate_comments, evaluate_refinement
-from utils.observer import SocketObserver, Status, Subject, uuid2subject
+from utils.observer import SocketObserver, Status, Subject
 import functools
 import json, uuid
 
@@ -64,7 +64,7 @@ def handler(type_: str, validate_json: Callable, evaluate_submission: Callable):
 
     process_id = str(uuid.uuid4())
     subject = Subject(process_id, type_, evaluate_submission)
-    uuid2subject[process_id] = subject
+    Subject.uuid2subject[process_id] = subject
 
     QUEUE_MANAGER.submit(subject, validated)
     url = url_for(f".status", id=process_id, _external=True)
@@ -91,10 +91,10 @@ def submit_comments(task):
 
 @router.route('/status/<id>')
 def status(id):
-    if id not in uuid2subject:
+    if id not in Subject.uuid2subject:
         return jsonify({"error": "Id doens't exist", "message": f"Id {id} doesn't exist"}), 404
 
-    subject = uuid2subject[id]
+    subject = Subject.uuid2subject[id]
     if subject.status == Status.COMPLETE:
         return jsonify({"status": "complete", "type": subject.type, "results": subject.results})
 
