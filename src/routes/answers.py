@@ -1,6 +1,7 @@
 # routes/answers.py
 from typing import Callable
 from flask import Blueprint, request, jsonify, current_app, url_for
+from utils.dataset import CommentGenSubmission
 from utils.errors import InvalidJsonFormatError
 from utils.process_data import evaluate_comments, evaluate_refinement
 from utils.observer import SocketObserver, Status, Subject
@@ -14,16 +15,22 @@ router = Blueprint('answers', __name__, url_prefix='/answers')
 ALLOWED_EXT = {'json'}
 
 
-def validate_json_format_for_comment_gen(data: str) -> dict[str, str]:
+def validate_json_format_for_comment_gen(data: str) -> dict[str, CommentGenSubmission]:
     try:
         obj = json.loads(data)
+        ret = {}
         if not isinstance(obj, dict):
             raise InvalidJsonFormatError("Submitted json doesn't contain an object")
-        if not all(isinstance(v, str) for v in obj.values()):
-            raise InvalidJsonFormatError(
-                "Submitted json object must only be str -> str. Namely id -> comment"
-            )
-        return obj
+
+        for id, submission in obj.items():
+            if not isinstance(id, str):
+                raise InvalidJsonFormatError("The id of a particular submission must be a string")
+            if not isinstance(submission, dict):
+                raise InvalidJsonFormatError(
+                    "A particular submission must be a dictionary of type {'path' -> str, 'line_from' -> int, 'line_to' -> int, 'body' -> str}"
+                )
+            ret[id] = CommentGenSubmission.json_parse(submission)
+        return ret
     except InvalidJsonFormatError as e:
         raise e
     except Exception:

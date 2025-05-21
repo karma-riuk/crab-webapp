@@ -3,6 +3,8 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 import json, uuid
 
+from utils.errors import InvalidJsonFormatError
+
 # fmt: off
 @dataclass
 class FileData:
@@ -47,6 +49,29 @@ class Metadata:
         if only_id:
             return f"{self.id}_{state.value}.tar.gz"
         return f"{self.repo.replace('/', '_')}_{self.pr_number}_{state.value}.tar.gz"
+
+@dataclass
+class CommentGenSubmission:
+    path: str
+    line_from: int
+    line_to: Optional[int]
+    body: str
+
+    @classmethod
+    def json_parse(cls, data) -> "CommentGenSubmission":
+        if not isinstance(data, dict):
+            raise InvalidJsonFormatError("Submitted json doesn't contain an object")
+        if not all(k in data and isinstance(data[k], str) for k in ["path", "body"]):
+            raise InvalidJsonFormatError("Submitted json doesn't contain the required fields")
+        if not all(k in data and isinstance(data[k], (int, type(None))) for k in ["line_from", "line_to"]):
+            raise InvalidJsonFormatError("Submitted json doesn't contain the required fields")
+
+        return cls(
+            path=data["path"],
+            line_from=data["line_from"],
+            line_to=data.get("line_to"),
+            body=data["body"],
+        )
 
 @dataclass
 class DatasetEntry:

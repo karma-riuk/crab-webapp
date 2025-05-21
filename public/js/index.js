@@ -37,14 +37,18 @@ function populateCommentTable(results) {
         const row = tbody.insertRow();
         const idCell = row.insertCell();
         const commentCell = row.insertCell();
+        const pathCell = row.insertCell();
+        const distanceCell = row.insertCell();
         const scoreCell = row.insertCell();
         const span = document.createElement("span");
 
         idCell.textContent = id;
         span.className = "comment-cell";
-        span.textContent = info["proposed_comment"];
+        span.textContent = info["proposed_comment"].body;
         commentCell.appendChild(span);
         scoreCell.textContent = info["max_bleu_score"].toFixed(2);
+        pathCell.textContent = info["correct_file"] ? tick : cross;
+        distanceCell.textContent = info["distance"];
     });
 }
 
