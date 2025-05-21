@@ -1,16 +1,16 @@
 import json
+import os
 import sys
 from typing_extensions import Callable
 from utils.build_handlers import get_build_handler
-from .paths import get_project_path
 from sacrebleu import sentence_bleu as bleu
 from utils.dataset import ArchiveState, Comment, CommentGenSubmission, Dataset
 
 REFERENCE_MAP = Dataset.from_json(
-    str(get_project_path('../data/dataset.json'))
+    os.getenv("DATASET_PATH", os.path.join("data", "dataset.json")),
 ).build_reference_map()
 
-ARCHIVES_ROOT = str(get_project_path('../data/archives'))
+ARCHIVES_ROOT = os.getenv("ARCHIVES_ROOT", "data/archives")
 
 
 def comment_distance(submission: CommentGenSubmission, entry: Comment):
