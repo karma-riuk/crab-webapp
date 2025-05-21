@@ -65,7 +65,7 @@ class Subject:
                 os.remove(file_path)
                 continue
 
-            _, type_, _ = file.split("_")
+            _, type_, *_ = file.split("_")
             with open(file_path, "r") as f:
                 subject = Subject(
                     type_, lambda: None, id=file, status=Status.COMPLETE, results=json.load(f)
