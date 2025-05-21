@@ -207,7 +207,8 @@ document.getElementById("request-status").onclick = async () => {
         commentResultsContainer.classList.add("hidden");
         refinementResultsContainer.classList.add("hidden");
         if (json.type == "comment") populateCommentTable(json.results);
-        else if (json.type == "comment") populateRefinementTable(json.results);
+        else if (json.type == "refinement")
+            populateRefinementTable(json.results);
         else console.error(`Unknown type ${data.type}`);
         // set global variable, used when user wants to download results
         results = json.results;
