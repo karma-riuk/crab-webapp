@@ -121,7 +121,17 @@ def evaluate_refinement(
             )
             continue
 
-        build_handler.inject_changes(changes)
+        try:
+            build_handler.inject_changes(changes)
+        except Exception as e:
+            results[id]["changes_injection"] = False
+            results[id]["changes_injection_error_msg"] = str(e)
+            print(
+                f"[ERROR] {id} ({entry.metadata.repo} #PR {entry.metadata.pr_number}) {type(e)}: {e}",
+                file=sys.stderr,
+            )
+            continue
+
         current_progress += 1
         percent_cb(current_progress / total_number_of_steps * 100)
 

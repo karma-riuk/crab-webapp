@@ -20,7 +20,7 @@ class BuildHandler(ABC):
 
     def __init__(self, repo_path: str, build_file: str, updates: dict) -> None:
         super().__init__()
-        self.path: str = repo_path
+        self.path: str = os.path.abspath(repo_path)
         self.build_file: str = build_file
         self.updates = updates
 
@@ -158,7 +158,11 @@ class BuildHandler(ABC):
 
     def inject_changes(self, changes: dict[str, str]):
         for file_path, change in changes.items():
-            full_path = os.path.join(self.path, file_path)
+            full_path = os.path.abspath(os.path.join(self.path, file_path))
+            assert (
+                os.path.commonpath([self.path, full_path]) != self.path
+            ), "Attempting to write to a file outside the repo. This is not allowed"
+
             print(f"[INFO] Writing change to {full_path}")
             dirname = os.path.dirname(full_path)
             if not os.path.exists(dirname):
