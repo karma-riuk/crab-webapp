@@ -7,7 +7,6 @@ router = Blueprint('index', __name__)
 
 @router.route('/')
 def welcome():
-    print("hello")
     return current_app.send_static_file('index.html')
 
 
