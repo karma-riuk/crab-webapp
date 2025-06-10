@@ -1,11 +1,14 @@
 # routes/datasets.py
 from flask import Blueprint, send_from_directory, request, jsonify
-from utils.paths import get_project_path
+import os
 
 router = Blueprint('datasets', __name__, url_prefix='/datasets')
 
 DATASETS = {'comment_generation', 'code_refinement'}
-DATA_DIR = get_project_path('../data')
+
+# below, the '../' + is need because the send_from send_from_directory is local
+# the file, but the DATA_DIR is local to the root of the repo
+DATA_DIR = os.path.join('..', os.getenv("DATA_PATH", "data"))
 
 
 @router.route('/download/<dataset>')
