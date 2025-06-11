@@ -1,6 +1,7 @@
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import Future, ThreadPoolExecutor
 from collections import deque
 from utils.observer import Subject, Status
+import traceback
 
 
 class QueueManager:
@@ -18,7 +19,15 @@ class QueueManager:
         # Add to waiting queue
         self.wait_queue.append(subject.id)
         # Schedule the task on the executor
-        self.executor.submit(self._run, subject, *args, **kwargs)
+        future = self.executor.submit(self._run, subject, *args, **kwargs)
+        future.add_done_callback(self._on_task_done)
+
+    def _on_task_done(self, fut: Future) -> None:
+        exc = fut.exception()
+        if exc is not None:
+            # print exception and stack
+            print(f"\n[ERROR] Task “{fut}” raised an exception:")
+            traceback.print_exception(type(exc), exc, exc.__traceback__)
 
     def get_position(self, subject_id: str) -> int:
         """
