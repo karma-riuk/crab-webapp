@@ -56,7 +56,7 @@ def init_socketio(app):
         if sid in SocketObserver.socket2obs:
             obs = SocketObserver.socket2obs.pop(sid)
             if obs in Subject.obs2subject:
-                subject = Subject.obs2subject.pop(obs)
+                subject = Subject.obs2subject[obs]
                 subject.unregisterObserver(obs)
 
     @socketio.on('get_queue_position')
