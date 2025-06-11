@@ -160,7 +160,7 @@ class BuildHandler(ABC):
         for file_path, change in changes.items():
             full_path = os.path.abspath(os.path.join(self.path, file_path))
             assert (
-                os.path.commonpath([self.path, full_path]) != self.path
+                os.path.commonpath([self.path, full_path]) == self.path
             ), "Attempting to write to a file outside the repo. This is not allowed"
 
             print(f"[INFO] Writing change to {full_path}")
