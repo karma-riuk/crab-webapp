@@ -586,10 +586,10 @@ def get_coverage_for_file(xml_file: str, target_fully_qualified_class: str, base
 
 class WaitBuildHander(BuildHandler):
     def compile_repo(self) -> None:
-        time.sleep(1)
+        time.sleep(0.1)
 
     def test_repo(self) -> None:
-        time.sleep(1)
+        time.sleep(0.1)
 
     def get_type(self) -> str:
         ...
