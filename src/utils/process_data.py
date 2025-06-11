@@ -120,6 +120,7 @@ def evaluate_refinement(
             )
             continue
 
+        results[id] = {}
         try:
             build_handler.inject_changes(changes)
         except Exception as e:
@@ -134,7 +135,6 @@ def evaluate_refinement(
         current_progress += 1
         percent_cb(current_progress / total_number_of_steps * 100)
 
-        results[id] = {}
         with build_handler:
             steps = [
                 ("compilation", build_handler.compile_repo),
