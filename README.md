@@ -95,6 +95,11 @@ python src/server.py
 └── .env.example                # Template for environment variables
 ```
 
+## Contributing
+
+1. **Issue Tracker**: Please file issues for bugs or feature requests.
+1. **Pull Requests**: Fork, create a topic branch, and submit a PR. Please include tests or validations where applicable.
+
 ## Acknowledgements
 
 - Developed as part of a Master's thesis at Università della Svizzera Italiana.
