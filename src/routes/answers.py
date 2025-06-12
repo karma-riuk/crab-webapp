@@ -5,8 +5,7 @@ from utils.dataset import CommentGenSubmission
 from utils.errors import InvalidJsonFormatError
 from utils.process_data import evaluate_comments, evaluate_refinement
 from utils.observer import SocketObserver, Status, Subject
-import functools
-import json
+import functools, json, os
 
 from utils.queue_manager import QueueManager
 
@@ -56,7 +55,7 @@ def validate_json_format_for_code_refinement(data: str) -> dict[str, dict[str, s
         raise InvalidJsonFormatError()
 
 
-QUEUE_MANAGER = QueueManager(1)
+QUEUE_MANAGER = QueueManager(int(os.environ["MAX_WORKERS"]))
 
 
 def handler(type_: str, validate_json: Callable, evaluate_submission: Callable):

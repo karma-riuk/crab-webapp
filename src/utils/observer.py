@@ -4,7 +4,7 @@ from enum import Enum
 import os, tempfile, threading, json
 from typing import Callable, Optional, Set
 
-RESULTS_DIR = os.getenv("RESULTS_DIR", "submission_results")
+RESULTS_DIR = os.environ["RESULTS_DIR"]
 
 
 class Status(Enum):

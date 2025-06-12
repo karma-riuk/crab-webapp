@@ -8,7 +8,7 @@ DATASETS = {'comment_generation', 'code_refinement'}
 
 # below, the '../' + is need because the send_from send_from_directory is local
 # the file, but the DATA_DIR is local to the root of the repo
-DATA_DIR = os.path.join('..', os.getenv("DATA_PATH", "data"))
+DATA_DIR = os.path.join('..', os.environ["DATA_PATH"])
 
 
 @router.route('/download/<dataset>')

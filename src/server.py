@@ -1,4 +1,9 @@
-# server.py
+from utils.env_defaults import set_env_defaults
+from dotenv import load_dotenv
+
+set_env_defaults()
+load_dotenv()
+
 from flask import Flask, request
 from flask_cors import CORS
 from flask_socketio import SocketIO
@@ -8,10 +13,6 @@ from routes.answers import QUEUE_MANAGER, router as answers_router
 from routes.datasets import router as datasets_router
 from werkzeug.exceptions import HTTPException
 import os
-
-from dotenv import load_dotenv
-
-load_dotenv()
 
 app = Flask(__name__, static_folder='../public', static_url_path='/')
 
@@ -79,7 +80,7 @@ def init_socketio(app):
 socketio = init_socketio(app)
 
 if __name__ == '__main__':
-    port = int(os.getenv('PORT', 45003))
+    port = int(os.environ['PORT'])
     socketio.run(
         app,
         use_reloader=True,

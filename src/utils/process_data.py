@@ -5,11 +5,9 @@ from utils.build_handlers import get_build_handler
 from sacrebleu import sentence_bleu as bleu
 from utils.dataset import ArchiveState, Comment, CommentGenSubmission, Dataset
 
-REFERENCE_MAP = Dataset.from_json(
-    os.getenv("DATASET_PATH", os.path.join("data", "dataset.json")),
-).build_reference_map()
+REFERENCE_MAP = Dataset.from_json(os.environ["DATASET_PATH"]).build_reference_map()
 
-ARCHIVES_ROOT = os.getenv("ARCHIVES_ROOT", "data/archives")
+ARCHIVES_ROOT = os.environ["ARCHIVES_ROOT"]
 
 
 def comment_distance(submission: CommentGenSubmission, entry: Comment):

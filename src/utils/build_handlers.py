@@ -637,7 +637,7 @@ def get_build_handler(root: str, repo: str, verbose: bool = False) -> BuildHandl
         an instance of GradleHandler or MavenHandler
     """
     path = os.path.join(root, repo)
-    if os.getenv('MOCK_BUILD_HANDLER', False):
+    if bool(os.environ["MOCK_BUILD_HANDLER"]):
         return WaitBuildHander("NO REPO PATH", "NO BUILD FILE", {})
 
     # 1) If it's a tarball, extract it
