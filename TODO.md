@@ -28,22 +28,22 @@ Batch 1 then move on to some other features (frontend, maybe auth).
 
 ## [x] As a user I want to see what the webpage is used for (inspired from https://seart-ghs.si.usi.ch)
 
-## [ ] Remove the paths utils, it's useless in python since every path is relative to where you call the script from
+## [x] Remove the paths utils, it's useless in python since every path is relative to where you call the script from
 
 # DATASET
 
 ## [x] Rebuild the dataset (is doing)
 
-## [ ] Match all the current entries in dataset.json and put the selection thing inside dataset.dont-care.json
+## [x] Match all the current entries in dataset.json and put the selection thing inside dataset.dont-care.json
 
-## [ ] Go through manual selection of dataset.dont-care.json to fill missing repos
+## [x] Go through manual selection of dataset.dont-care.json to fill missing repos
 
-## [ ] The step above will already create all the archives
+## [x] The step above will already create all the archives
 
-## [ ] Signal the instances that are actually covered
+## [x] Signal the instances that are actually covered
 
-## [ ] When submitting for refinement, give the user a link that he can put in a text box to see the results
+## [x] When submitting for refinement, give the user a link that he can put in a text box to see the results
 
 # Paper
 
-## [ ] Write paper
+## [x] Write paper
