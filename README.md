@@ -38,22 +38,22 @@ A research-driven platform for evaluating deep learning models on automated code
 ## Features
 
 - **Static Frontend**: Vanilla HTML/CSS/JS interface—no build toolchain required.
-- **Dataset Delivery**: ZIP archives of JSON files, with optional full repo context fileciteturn3file13.
-- **Submission Queue**: Server-managed job queue with configurable parallelism (via `MAX_WORKERS`) fileciteturn3file0.
-- **Real‑time Feedback**: Progress updates over WebSockets (using Flask-SocketIO) fileciteturn3file3.
+- **Dataset Delivery**: ZIP archives of JSON files, with optional full repo context.
+- **Submission Queue**: Server-managed job queue with configurable parallelism (via `MAX_WORKERS`).
+- **Real‑time Feedback**: Progress updates over WebSockets (using Flask-SocketIO).
 - **Robust Data Processing**: Utilities for parsing, validating, and evaluating submissions in `src/utils`.
 
 ## Prerequisites
 
 - **Python 3.8+**
-- *(Optional)* Docker daemon if you wish to containerize the service
+- *(Optional)* Docker daemon if you wish to execute the code refinement evaluation
 
 ## Installation & Setup
 
 1. **Clone** the repository:
 
    ```bash
-   git clone https://github.com/yourusername/crab-webapp.git
+   git clone https://github.com/karma-riuk/crab-webapp.git
    cd crab-webapp
    ```
 
@@ -65,7 +65,7 @@ A research-driven platform for evaluating deep learning models on automated code
 
 ### Environment Variables
 
-Defaults are set in `src/utils/env_defaults.py` (port 45003, `data/` path, etc.) fileciteturn3file5. To override:
+Defaults are set in `src/utils/env_defaults.py` (port 45003, `data/` path, etc.) To override:
 
 ```bash
 cp .env.example .env
@@ -78,10 +78,10 @@ cp .env.example .env
 From the project root:
 
 ```bash
-python -m src.server
+python src/server.py
 ```
 
-- The Flask app serves static files from `public/` at `/` and mounts API routes under `/datasets` and `/answers` via Blueprints fileciteturn3file3.
+- The Flask app serves static files from `public/` at `/` and mounts API routes under `/datasets` and `/answers` via Blueprints.
 - By default, open your browser to **[http://localhost:45003/](http://localhost:45003/)**.
 
 ## Using the Webapp
@@ -90,7 +90,7 @@ python -m src.server
 
 1. Select **Comment Generation** or **Code Refinement**.
 1. (Optional) Check **Include context** to get full repo snapshots.
-1. Click **Download** to receive a ZIP with JSON (see schemas in `public/index.html`) fileciteturn3file14.
+1. Click **Download** to receive a ZIP with JSON (see schemas in `public/index.html`)
 
 ### Upload Predictions
 
@@ -101,61 +101,60 @@ python -m src.server
 
 ### Track Submission Status
 
-- Progress bar displays real-time percentage via WebSocket events.
+- Progress bar displays real-time percentage via WebSocket events (requires `X-Socket-Id` for subscribing to updates).
 
-- You can also poll **GET** `/answers/status/<id>` (requires `X-Socket-Id` header) to retrieve:
+- You can also poll **GET** `/answers/status/<id>` to retrieve a simple JSON object:
 
   - `status`: `created`, `waiting`, `processing`, or `complete`
-  - on completion: `{ type, results }` JSON payload fileciteturn3file0.
+
+  - Once `status` is `complete`, the response includes:
+
+    ```js
+    {
+      "type": "comment" | "refinement",
+      "results": { /* evaluation metrics or processed data */ }
+    }
+    ```
 
 ## API Endpoints
 
 | Method | Route | Description |
 | ------ | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| GET | `/datasets/download/<dataset>` | Download ZIP of `comment_generation` or `code_refinement` (use `?withContext=true` for full repo). fileciteturn3file13 |
+| GET | `/datasets/download/<dataset>` | Download ZIP of `comment_generation` or `code_refinement` (use `?withContext=true` for full repo).|
 | POST | `/answers/submit/comment` | Submit comment-generation JSON. |
 | POST | `/answers/submit/refinement` | Submit code-refinement JSON. |
-| GET | `/answers/status/<id>` | Poll status or results (include `X-Socket-Id`). |
+| GET | `/answers/status/<id>` | Poll status or results (may include `X-Socket-Id` for notifications). |
 
 ## Project Structure
 
 ```
-├── data/                    # Dataset files: dataset.json, archives, etc.
-├── public/                  # Static frontend
-│   ├── css/style.css        # Styles
-│   ├── img/crab.png         # Icon
-│   ├── index.html           # UI with modals, schema docs
-│   └── js/                  # Frontend scripts
-│       ├── index.js         # UI logic, fetch & WebSocket handlers
-│       ├── modal.js         # Modal dialogs
-│       └── sorttable.js     # Table sorting
-├── src/                     # Backend source
-│   ├── server.py            # App entry: Flask + SocketIO fileciteturn3file3
-│   ├── routes/              # Blueprints
-│   │   ├── index.py         # Root & health-check
-│   │   ├── datasets.py      # File downloads fileciteturn3file13
-│   │   └── answers.py       # Submission & status endpoints fileciteturn3file1
-│   └── utils/               # Core logic & helpers
-│       ├── env_defaults.py  # Default ENV vars fileciteturn3file5
-│       ├── dataset.py       # Load/validate dataset JSON fileciteturn3file2
-│       ├── process_data.py  # Evaluation functions
-│       ├── observer.py      # WebSocket observer & queue cleanup fileciteturn3file17
-│       ├── queue_manager.py # Concurrency control
-│       └── build_handlers.py# Build/test wrappers
-├── requirements.txt         # Python libs: Flask, SocketIO, dotenv, etc. fileciteturn3file12
-├── TODO.md                  # Next steps and backlog
-└── .env.example             # Template for environment variables
+├── data/                       # Dataset files: dataset.json, archives, etc.
+├── public/                     # Static frontend
+│   ├── css/style.css           # Styles
+│   ├── img/crab.png            # Icon
+│   ├── index.html              # UI with modals, schema docs
+│   └── js/                     # Frontend scripts
+│       ├── index.js            # UI logic, fetch & WebSocket handlers
+│       ├── modal.js            # Modal dialogs
+│       └── sorttable.js        # Table sorting
+├── src/                        # Backend source
+│   ├── server.py               # App entry: Flask + SocketIO
+│   ├── routes/                 # Blueprints
+│   │   ├── index.py            # Root & health-check
+│   │   ├── datasets.py         # File downloads
+│   │   └── answers.py          # Submission & status endpoints
+│   └── utils/                  # Core logic & helpers
+│       ├── env_defaults.py     # Default ENV vars
+│       ├── dataset.py          # Load/validate dataset JSON
+│       ├── process_data.py     # Evaluation functions
+│       ├── observer.py         # WebSocket observer & queue cleanup
+│       ├── queue_manager.py    # Concurrency control
+│       └── build_handlers.py   # Build/test wrappers
+├── requirements.txt            # Python libs: Flask, SocketIO, dotenv, etc.
+├── TODO.md                     # Next steps and backlog
+└── .env.example                # Template for environment variables
 ```
-
-## Contributing
-
-Issues and PRs welcome! Please follow existing style, add tests for new features, and update documentation accordingly.
-
-## License
-
-This project is licensed under [Your License Here].
 
 ## Acknowledgements
 
-- Developed as part of a Master's thesis at USI.
-- Inspired by Dean Edwards' sortable tables (sorttable.js) and Flask‑SocketIO examples.
+- Developed as part of a Master's thesis at Università della Svizzera Italiana.
