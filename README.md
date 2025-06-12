@@ -7,21 +7,6 @@ A research-driven platform for evaluating deep learning models on automated code
 - **Result evaluation**: Upload model-generated predictions to receive standardized evaluation
   metrics via a REST+WebSocket API.
 
-## Table of Contents
-
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Installation & Setup](#installation--setup)
-  - [Environment Variables](#environment-variables)
-- [Running the Application](#running-the-application)
-- [Using the Webapp](#using-the-webapp)
-  - [Download a Dataset](#download-a-dataset)
-  - [Upload Predictions](#upload-predictions)
-  - [Track Submission Status](#track-submission-status)
-- [API Endpoints](#api-endpoints)
-- [Project Structure](#project-structure)
-- [Acknowledgements](#acknowledgements)
-
 ## Features
 
 - **Static Frontend**: Vanilla HTML/CSS/JS interface—no build toolchain required.
@@ -70,38 +55,6 @@ python src/server.py
 
 - The Flask app serves static files from `public/` at `/` and mounts API routes under `/datasets` and `/answers` via Blueprints.
 - By default, open your browser to **[http://localhost:45003/](http://localhost:45003/)**.
-
-## Using the Webapp
-
-### Download a Dataset
-
-1. Select **Comment Generation** or **Code Refinement**.
-1. (Optional) Check **Include context** to get full repo snapshots.
-1. Click **Download** to receive a ZIP with JSON (see schemas in `public/index.html`)
-
-### Upload Predictions
-
-1. Choose task type (`comment` or `refinement`).
-1. Select your JSON file (matching the dataset schema).
-1. Click **Upload JSON**.
-1. The server responds with a **process ID**.
-
-### Track Submission Status
-
-- Progress bar displays real-time percentage via WebSocket events (requires `X-Socket-Id` for subscribing to updates).
-
-- You can also poll **GET** `/answers/status/<id>` to retrieve a simple JSON object:
-
-  - `status`: `created`, `waiting`, `processing`, or `complete`
-
-  - Once `status` is `complete`, the response includes:
-
-    ```js
-    {
-      "type": "comment" | "refinement",
-      "results": { /* evaluation metrics or processed data */ }
-    }
-    ```
 
 ## API Endpoints
 
