@@ -29,6 +29,13 @@ A research-driven platform for evaluating deep learning models on automated code
    cd crab-webapp
    ```
 
+1. *(Optional)* **Create Python Environement**
+
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate
+   ```
+
 1. **Install** Python dependencies:
 
    ```bash
@@ -37,7 +44,8 @@ A research-driven platform for evaluating deep learning models on automated code
 
 ### Environment Variables
 
-Defaults are set in `src/utils/env_defaults.py` (port 45003, `data/` path, etc.) To override:
+Defaults are set in `src/utils/env_defaults.py` (port 45003, `data/` path, etc.) and described in
+the comments of `.env.example`. To override:
 
 ```bash
 cp .env.example .env
