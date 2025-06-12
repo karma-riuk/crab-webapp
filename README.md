@@ -10,29 +10,16 @@ A research-driven platform for evaluating deep learning models on automated code
 ## Table of Contents
 
 - [Features](#features)
-
 - [Prerequisites](#prerequisites)
-
 - [Installation & Setup](#installation--setup)
-
   - [Environment Variables](#environment-variables)
-
 - [Running the Application](#running-the-application)
-
 - [Using the Webapp](#using-the-webapp)
-
   - [Download a Dataset](#download-a-dataset)
   - [Upload Predictions](#upload-predictions)
   - [Track Submission Status](#track-submission-status)
-
 - [API Endpoints](#api-endpoints)
-
 - [Project Structure](#project-structure)
-
-- [Contributing](#contributing)
-
-- [License](#license)
-
 - [Acknowledgements](#acknowledgements)
 
 ## Features
