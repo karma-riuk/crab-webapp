@@ -260,16 +260,32 @@
                             <strong>Comment Generation</strong>
                         </summary>
                         <p>
-                            Submit a JSON object where each key is a string ID and each value is the generated comment.
+                            Submit a JSON object where each key is a string ID and each value is an object representing
+                            the proposed comment for that instance. Each comment must specify the file path, the
+                            starting line, the ending line (or null), and the comment text itself.
+                        </p>
+                        <p>
+                            All fields are required and must follow the expected types exactly. The <code>line_to</code>
+                            field can be null if the comment applies to a single line.
                         </p>
                         <pre><code>
 {
-    "1234": "This method lacks null checks.",
-    "5678": "Consider renaming this variable for clarity."
-} 
-                    </code></pre>
-
+    "1234": {
+        "path": "src/Main.java",
+        "line_from": 10,
+        "line_to": 12,
+        "body": "Consider extracting this block into a separate method."
+    },
+    "5678": {
+        "path": "src/Util.java",
+        "line_from": 42,
+        "line_to": null,
+        "body": "You might want to add a null check here."
+    }
+}
+    </code></pre>
                     </details>
+
                     <details>
                         <summary><strong>Code Refinement</strong></summary>
                         <p>
