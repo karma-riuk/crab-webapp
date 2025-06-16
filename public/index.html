@@ -297,9 +297,49 @@
             </section>
         </template>
         <template id="info-results">
-            <h2>Getting information of ongoing process</h2>
+            <h2>Getting Information About Ongoing Process</h2>
             <div>
-                yes
+                <p>
+                    After you upload your predictions for either the <strong>Comment Generation</strong> or <strong>Code
+                        Refinement</strong> task, the evaluation begins in the background. Depending on the size of your
+                    submission and how busy the system is, this process may take some time. This is especially true for
+                    the code refinement task, which involves compiling and testing the submitted code.
+                </p>
+
+                <p>
+                    To help you track progress, the system assigns a unique <strong>process ID</strong> to every
+                    submission. This ID will be shown to you right after the upload is complete. Be sure to save or copy
+                    this ID, as it is the only way to check on the status of your evaluation if you close or refresh the
+                    page.
+                </p>
+
+                <p>
+                    To view the current status of a submission, enter your process ID in the field labeled
+                    <strong>"Process id"</strong> in this section and click the <strong>"Request status"</strong>
+                    button. The system will respond by showing whether your evaluation is still running, has finished
+                    successfully, or encountered an error.
+                </p>
+
+                <p>
+                    When the process is complete, the results will automatically appear in a summary table in place of
+                    the progress bar. You will also see an option to download the results as a JSON file. The JSON
+                    includes more detailed information than what is shown in the table, such as exact evaluation scores,
+                    file-level data, and other metadata that may be useful for in-depth analysis.
+                </p>
+
+                <p>
+                    If the process is still running, you can come back at any time and use the same ID to check the
+                    status again. The evaluation runs entirely in the background on our servers, so you do not need to
+                    keep the page open. You can safely close the browser, shut down your computer, or return on a
+                    different device. As long as you have your process ID, you will be able to retrieve your results
+                    later.
+                </p>
+
+                <p>
+                    <strong>Important:</strong> If you lose or forget your process ID, you will not be able to retrieve
+                    your results. In that case, you would need to reupload your predictions and start a new evaluation.
+                    For this reason, we recommend saving the process ID as soon as it is displayed.
+                </p>
             </div>
         </template>
     </main>
