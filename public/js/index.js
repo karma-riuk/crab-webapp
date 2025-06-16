@@ -75,8 +75,8 @@ document.getElementById("upload-btn").onclick = async () => {
     uploadStatusEl.classList.add("hidden");
     progressContainer.classList.add("hidden");
 
-    const type = document.getElementById("answer-cype").value;
-    const fileInput = document.getElementById("file-cnput");
+    const type = document.getElementById("answer-type").value;
+    const fileInput = document.getElementById("file-input");
     if (!fileInput.files.length) {
         return alert("Please choose a JSON file first.");
     }
