@@ -47,7 +47,7 @@ header .info-btn {
     padding: 0;
 }
 
-fieldset .info-btn {
+fieldset .info-btn, .modal-overlay .info-btn{
     padding: revert;
 }
 

@@ -58,7 +58,7 @@
             <br /><br />
             <div style="display: flex; align-items: center; gap: 0.5em">
                 <button id="upload-btn">Upload JSON</button>
-                <div id="upload-status" class="hidden" style="color: green;"> hello world </div>
+                <div id="upload-status" class="hidden" style="color: green;"></div>
             </div>
         </fieldset>
 
@@ -127,20 +127,45 @@
         <template id="about">
             <h2>About this project</h2>
             <div>
-                <p>CRAB (Code Review Automation Benchmark) is a research-driven platform designed to evaluate deep
-                    learning models for code review tasks. Developed as part of a master's thesis at the Università
-                    della Svizzera italiana, CRAB provides a high-quality, curated benchmark dataset of Java code review
-                    triplets: submitted code, reviewer comment, and revised code. Each instance is manually validated to
-                    ensure that reviewer comments directly address code issues and that the revised code implements the
-                    feedback accurately. </p>
+                <p>
+                    This project introduces <strong>CRAB (Code Review Automated Benchmark)</strong>, a high-quality
+                    benchmark designed to evaluate deep learning-based code review automation tools. It focuses on two
+                    key tasks:
+                </p>
+                <ul>
+                    <li><strong>Comment Generation</strong>: Generating natural language review comments that identify
+                        issues and suggest improvements for a given piece of code.</li>
+                    <li><strong>Code Refinement</strong>: Producing revised code that correctly implements the
+                        suggestions from a review comment.</li>
+                </ul>
+                <p>
+                    The dataset consists of
+                    carefully curated triplets
+                    <code>&lt;submitted_code, reviewer_comment, revised_code&gt;</code>—ensuring each comment is
+                    actionable and each revision implements the suggested change. This eliminates noise common in
+                    previous datasets and supports reliable, meaningful evaluation.
+                </p>
+                <p>
+                    To support model benchmarking, we also provide a web-based evaluation platform (the website on which
+                    you are reading this description) that allows researchers to download the dataset, submit their
+                    predictions, and assess model performance across both tasks.
+                </p>
+                <p>
+                    You can explore the source code for each component here:
+                </p>
+                <ul>
+                    <li><a href="https://github.com/karma-riuk/crab" target="_blank">Dataset Construction Repository</a>
+                    </li>
+                    <li><a href="https://github.com/karma-riuk/crab-webapp" target="_blank">Web App Repository</a></li>
+                </ul>
 
-                <p>The platform supports two core tasks: generating human-like review comments and refining code based
-                    on those comments. It also accounts for paraphrased feedback and alternative valid code revisions,
-                    offering a more realistic and robust evaluation. CRAB addresses the shortcomings of existing
-                    datasets by eliminating noise and ensuring functional correctness through testing. Researchers can
-                    upload model predictions to receive standardized evaluations, making CRAB an essential tool for
-                    advancing automated code review technologies.</p>
-
+                <p>
+                    This website lets you evaluate code review models against the CRAB benchmark. You can download input
+                    files for either the comment generation or code refinement task, upload your model’s predictions,
+                    and view the results once processing is complete. Each section includes a help icon
+                    <button class='info-btn'><i class="fa fa-info"></i></button> that provides more detailed
+                    instructions and file format guidelines.
+                </p>
             </div>
         </template>
 
