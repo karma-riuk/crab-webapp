@@ -63,6 +63,7 @@ python src/server.py
 
 - The Flask app serves static files from `public/` at `/` and mounts API routes under `/datasets` and `/answers` via Blueprints.
 - By default, open your browser to **[http://localhost:45003/](http://localhost:45003/)**.
+  - If you want to try it out, you can go on **[http://gym.si.usi.ch:45003](http://gym.si.usi.ch:45003)** (you must be connected to USI network to access it).
 
 ## API Endpoints
 
