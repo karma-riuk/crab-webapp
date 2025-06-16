@@ -2,7 +2,7 @@ from utils.env_defaults import set_env_defaults
 from dotenv import load_dotenv
 
 set_env_defaults()
-load_dotenv()
+load_dotenv(override=True)
 
 from flask import Flask, request
 from flask_cors import CORS
