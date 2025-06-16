@@ -96,6 +96,10 @@ header #page-title {
     text-align: center;
 }
 
+#file-input {
+    width: 100%;
+}
+
 table {
     border-collapse: collapse;
 }
