@@ -584,7 +584,7 @@ def get_coverage_for_file(xml_file: str, target_fully_qualified_class: str, base
     return -1
 
 
-class WaitBuildHander(BuildHandler):
+class MockBuildHander(BuildHandler):
     def compile_repo(self) -> None:
         time.sleep(0.1)
 
@@ -638,7 +638,7 @@ def get_build_handler(root: str, repo: str, verbose: bool = False) -> BuildHandl
     """
     path = os.path.join(root, repo)
     if bool(os.environ["MOCK_BUILD_HANDLER"]):
-        return WaitBuildHander("NO REPO PATH", "NO BUILD FILE", {})
+        return MockBuildHander("NO REPO PATH", "NO BUILD FILE", {})
 
     # 1) If it's a tarball, extract it
     if os.path.isfile(path) and tarfile.is_tarfile(path):
