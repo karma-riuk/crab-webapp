@@ -188,8 +188,9 @@
                                 before
                                 the comment was made.</li>
                         </ul>
-                        <pre><code>{
-    "1234": {
+                        <pre><code>[
+    {
+        "id": "1234",
         "files": {
             "src/Main.java": "public class Main { ... }"
         },
@@ -197,7 +198,7 @@
             "src/Main.java": "@@ -1,3 +1,6 @@ ..."
         }
     }
-}</code></pre>
+]</code></pre>
                     </details>
 
                     <details>
@@ -210,22 +211,21 @@
                                 and
                                 the exact location of the comment.</li>
                         </ul>
-                        <pre><code lang="json">{
-    "5678": {
+                        <pre><code lang="json">[
+    {
+        "id": "5678",
         "files": { ... },
         "diffs": { ... },
         "comments": [
             {
                 "body": "Consider simplifying this logic.",
                 "file": "src/Util.java",
-                "location": {
-                    "start_line": 42,
-                    "end_line": 45
-                }
+                "from_": 42,
+                "to": 45
             }
         ]
     }
-}</code></pre>
+]</code></pre>
                     </details>
                 </section>
 
@@ -265,21 +265,21 @@
                             starting line, the ending line (or null), and the comment text itself.
                         </p>
                         <p>
-                            All fields are required and must follow the expected types exactly. The <code>line_to</code>
+                            All fields are required and must follow the expected types exactly. The <code>from_</code>
                             field can be null if the comment applies to a single line.
                         </p>
                         <pre><code>
 {
     "1234": {
         "path": "src/Main.java",
-        "line_from": 10,
-        "line_to": 12,
+        "from_": 10,
+        "to": 12,
         "body": "Consider extracting this block into a separate method."
     },
     "5678": {
         "path": "src/Util.java",
-        "line_from": 42,
-        "line_to": null,
+        "from_": null,
+        "to": 42,
         "body": "You might want to add a null check here."
     }
 }

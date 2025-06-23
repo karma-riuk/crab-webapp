@@ -51,8 +51,8 @@ class Metadata:
 @dataclass
 class CommentGenSubmission:
     path: str
-    line_from: int
-    line_to: Optional[int]
+    from_: Optional[int]
+    to: int
     body: str
 
     @classmethod
@@ -61,15 +61,13 @@ class CommentGenSubmission:
             raise InvalidJsonFormatError("Submitted json doesn't contain an object")
         if not all(k in data and isinstance(data[k], str) for k in ["path", "body"]):
             raise InvalidJsonFormatError("Submitted json doesn't contain the required fields")
-        if not all(
-            k in data and isinstance(data[k], (int, type(None))) for k in ["line_from", "line_to"]
-        ):
+        if not all(k in data and isinstance(data[k], (int, type(None))) for k in ["from_", "to"]):
             raise InvalidJsonFormatError("Submitted json doesn't contain the required fields")
 
         return cls(
             path=data["path"],
-            line_from=data["line_from"],
-            line_to=data.get("line_to"),
+            from_=data.get("from_"),
+            to=data["to"],
             body=data["body"],
         )
 

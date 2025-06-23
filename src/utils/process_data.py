@@ -13,7 +13,7 @@ ARCHIVES_ROOT = os.environ["ARCHIVES_ROOT"]
 def comment_distance(submission: CommentGenSubmission, entry: Comment):
     if entry.from_ is None and entry.to is None:
         return "NA"
-    if submission.line_from is None and submission.line_to is None:
+    if submission.from_ is None and submission.to is None:
         return "NA"
 
     # Collapse missing endpoints to the one defined endpoint
@@ -21,8 +21,8 @@ def comment_distance(submission: CommentGenSubmission, entry: Comment):
     start1 = entry.from_ if entry.from_ is not None else entry.to
     end1 = entry.to if entry.to is not None else entry.from_
     # For submission:
-    start2 = submission.line_from if submission.line_from is not None else submission.line_to
-    end2 = submission.line_to if submission.line_to is not None else submission.line_from
+    start2 = submission.from_ if submission.from_ is not None else submission.to
+    end2 = submission.to if submission.to is not None else submission.from_
 
     # Now both start1,end1 and start2,end2 are non-None
     # Normalize in case from > to (just in case):
